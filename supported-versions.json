@@ -49,13 +49,13 @@
             "IMAGE_BUILDER_COMMIT_ID": "ed30bc3e7b71ea41d2f79a16789d2b291d9f43d1"
         }
     },
-    "v1.30.5+vmware.1-fips-dev": {
+    "v1.30.5+vmware.2-fips": {
         "supported_os": [
             "photon-5",
             "ubuntu-2004-efi",
             "ubuntu-2204-efi"
         ],
-        "artifacts_image": "projects.registry.vmware.com/tkg/tkg-vsphere-linux-resource-bundle:v1.30.1_vmware.1-fips.1-tkg.1",
+        "artifacts_image": "vmware.io/tkg-vsphere-linux-resource-bundle:v1.30.5_vmware.2-fips-dev.2",
         "docker_build_args": {
             "IMAGE_BUILDER_COMMIT_ID": "ed30bc3e7b71ea41d2f79a16789d2b291d9f43d1"
         }
