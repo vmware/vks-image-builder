@@ -52,7 +52,6 @@
     "v1.30.5+vmware.2-fips": {
         "supported_os": [
             "photon-5",
-            "ubuntu-2004-efi",
             "ubuntu-2204-efi"
         ],
         "artifacts_image": "vmware.io/tkg-vsphere-linux-resource-bundle:v1.30.5_vmware.2-fips-dev.2",
