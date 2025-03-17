@@ -17,3 +17,4 @@ systemd_networkd_update_initramfs: >-
   update-initramfs -u
   {%- endif -%}
 enable_ubuntu_hwe: "False"
+journald_system_max_use: 2G
