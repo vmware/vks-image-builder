@@ -56,17 +56,10 @@
         file_type: file
       register: repo_files
 
-    # - name: Make sure the output directory exists
-    #   ansible.builtin.file:
-    #     path: "{{ output_dir }}{{ item }}"
-    #     state: directory
-    #     mode: "0755"
-    #   loop: "{{ source_dirs }}"
-
     - name: Copy all the repo sources
       ansible.builtin.fetch:
         src: "{{ item.path }}"
-        dest: "{{ output_dir }}/"
+        dest: "{{ output_dir }}/{{ item.path }}"
         flat: true
       loop: "{{ repo_files.files }}"
 
@@ -91,17 +84,10 @@
         file_type: file
       register: repo_files
 
-    # - name: Make sure the output directory exists
-    #   ansible.builtin.file:
-    #     path: "{{ output_dir }}{{ item }}"
-    #     state: directory
-    #     mode: "0755"
-    #   loop: "{{ source_dirs }}"
-
     - name: Copy all the repo sources
       ansible.builtin.fetch:
         src: "{{ item.path }}"
-        dest: "{{ output_dir }}/"
+        dest: "{{ output_dir }}/{{ item.path }}"
         flat: true
       loop: "{{ repo_files.files }}"
 

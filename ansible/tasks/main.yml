@@ -39,6 +39,3 @@
     executable: /bin/bash
 
 - ansible.builtin.import_tasks: disable_pwd_rotation.yml
-
-- ansible.builtin.import_tasks: gather_info.yml
-  when: ansible_os_family in ["Debian", "VMware Photon OS"]
