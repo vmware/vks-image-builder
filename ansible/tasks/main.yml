@@ -2,19 +2,19 @@
 # The term “Broadcom” refers to Broadcom Inc. and/or its subsidiaries.
 # SPDX-License-Identifier: MPL-2.0
 ---
-- import_tasks: common.yml
+- ansible.builtin.import_tasks: common.yml
 
-- import_tasks: photon.yml
+- ansible.builtin.import_tasks: photon.yml
   when: ansible_os_family == "VMware Photon OS"
 
-- import_tasks: ubuntu.yml
+- ansible.builtin.import_tasks: ubuntu.yml
   when: ansible_os_family == "Debian"
 
-- import_tasks: ubuntu_hack.yml
+- ansible.builtin.import_tasks: ubuntu_hack.yml
   when: ansible_os_family == "Debian"
 
 - name: Check if local registry store exists
-  uri:
+  ansible.builtin.uri:
     url: "{{ registry_store_archive_url | trim }}"
     method: GET
     status_code: [200, 201, 302]
@@ -22,14 +22,14 @@
   ignore_errors: true
 
 # Used in Windows OVA builds
-- import_tasks: registry.yml
+- ansible.builtin.import_tasks: registry.yml
   when: registry_store_url_check.status == 200
 
 # Used in Linux OVA builds
-- import_tasks: retag_images.yml
+- ansible.builtin.import_tasks: retag_images.yml
   when: registry_store_url_check.status != 200
 
-- import_tasks: iptables.yml
+- ansible.builtin.import_tasks: iptables.yml
 
 # va_hardening step in photon overrides the audit conf, so change the audit
 # conf after va_hardening is completed.
@@ -38,15 +38,7 @@
   args:
     executable: /bin/bash
 
-- import_tasks: disable_pwd_rotation.yml
+- ansible.builtin.import_tasks: disable_pwd_rotation.yml
 
-# Gather list of installed packages
-- name: Gather the package facts
-  ansible.builtin.package_facts:
-    manager: auto
-
-- name: Copy installed package details to local file
-  ansible.builtin.copy:
-    content: "{{ ansible_facts.packages | to_nice_json }}"
-    dest: "{{ output_dir }}/package_list.json"
-  delegate_to: localhost
+- ansible.builtin.import_tasks: gather_info.yml
+  when: ansible_os_family in ["Debian", "VMware Photon OS"]
