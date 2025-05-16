@@ -38,6 +38,7 @@
             pkg_mgr: "{{ ansible_pkg_mgr }}"
           boot_parameters: "{{ ansible_cmdline }}"
           python_version: "{{ ansible_python_version }}"
+          selinux: "{{ ansible_selinux }}"
 
 - name: Bundle Repository Sources - Ubuntu/Debian
   when: ansible_os_family == "Debian"
