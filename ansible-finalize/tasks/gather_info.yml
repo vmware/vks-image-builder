@@ -40,6 +40,35 @@
           python_version: "{{ ansible_python_version }}"
           selinux: "{{ ansible_selinux }}"
 
+- name: Gather the Kernel tunables
+  vars:
+    source_paths:
+      - /etc/sysctl.conf
+      - /etc/sysctl.d
+  block:
+    - name: List Kernel tunables configs
+      ansible.builtin.find:
+        depth: 1
+        paths: "{{ source_paths }}"
+        patterns:
+          - "*.conf"
+        file_type: file
+      register: kernel_tunables
+
+    - name: Copy all the kernel tunables
+      ansible.builtin.fetch:
+        src: "{{ item.path }}"
+        dest: "{{ output_dir }}/{{ item.path }}"
+        flat: true
+      loop: "{{ kernel_tunables.files }}"
+
+    - name: Compress the repo sources
+      community.general.archive:
+        path: "{{ output_dir }}/etc"
+        dest: "{{ output_dir }}/kernel_tunables.tgz"
+        remove: true
+      delegate_to: localhost
+
 - name: Bundle Repository Sources - Ubuntu/Debian
   when: ansible_os_family == "Debian"
   vars:
