@@ -35,6 +35,7 @@
             name: "{{ ansible_distribution }}"
             version: "{{ ansible_distribution_version }}"
             family: "{{ ansible_os_family }}"
+            description: "{{ ansible_lsb['description'] }}"
             pkg_mgr: "{{ ansible_pkg_mgr }}"
           boot_parameters: "{{ ansible_cmdline }}"
           python_version: "{{ ansible_python_version }}"
