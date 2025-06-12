@@ -893,3 +893,5 @@ tkg:
           - "install hfsplus /bin/false"
           - "install squashfs /bin/false"
           - "install udf /bin/false"
+  windows:
+    files:
