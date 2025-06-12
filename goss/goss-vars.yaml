@@ -655,6 +655,7 @@ tkg:
     package:
       iptables-persistent:
       unzip:
+      cifs-utils:
     command:
       ? antctl version 2>/dev/null | awk '{split($0,a," ");split(a[2],b,"-");print b[1];}'
       : exit-status: 0
@@ -756,6 +757,7 @@ tkg:
       netcat:
       tcpdump:
       wget:
+      cifs-utils:
     command:
       ? antctl version 2>/dev/null | awk '{split($0,a," ");split(a[2],b,"-");print b[1];}'
       : exit-status: 0
