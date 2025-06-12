@@ -710,6 +710,9 @@ tkg:
       logredirector.service:
         enabled: true
         running: true
+      cishardening.service:
+        enabled: true
+        running: false
     kernel-param:
     ova:
       os_version:
@@ -726,6 +729,15 @@ tkg:
           - "/^SystemMaxUse=/"
       "/opt/log_redirect.sh":
         exists: true
+        filetype: file
+        contains:
+      "/usr/local/bin/cis_hardening.sh":
+        exists: true
+        filetype: file
+        contains:
+      "/usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf":
+        exists: true
+        mode: "0600"
         filetype: file
         contains:
   photon:
@@ -848,6 +860,9 @@ tkg:
       logredirector.service:
         enabled: true
         running: true
+      cishardening.service:
+        enabled: true
+        running: false
     kernel-param:
     ova:
       os_version:
@@ -868,6 +883,15 @@ tkg:
           - "/^SystemMaxUse=/"
       "/opt/log_redirect.sh":
         exists: true
+        filetype: file
+        contains:
+      "/usr/local/bin/cis_hardening.sh":
+        exists: true
+        filetype: file
+        contains:
+      "/usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf":
+        exists: true
+        mode: "0600"
         filetype: file
         contains:
       "/etc/modprobe.d/modprobe.conf":

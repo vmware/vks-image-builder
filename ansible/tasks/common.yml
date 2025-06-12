@@ -54,6 +54,24 @@
     dest: /usr/local/bin/kubeadm
     mode: 0755
 
+- name: Copy CIS hardening script
+  copy:
+    src: files/scripts/cis_hardening.sh
+    dest: /usr/local/bin/cis_hardening.sh
+    mode: 0755
+
+- name: Copy systemd unit for CIS hardening
+  copy:
+    src: files/etc/systemd/system/cishardening.service
+    dest: /etc/systemd/system/cishardening.service
+
+- name: Enable CIS hardening service
+  systemd:
+    name: cishardening.service
+    daemon_reload: yes
+    enabled: true
+    state: restarted
+
 # TODO(KK) Investigate difference between upstream yaml and this
 - name: Configure /etc/crictl.yaml
   copy:
