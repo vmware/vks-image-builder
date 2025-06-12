@@ -34,3 +34,12 @@
     name: net.ipv4.icmp_echo_ignore_broadcasts
     value: "1"
     state: present
+    sysctl_set: true
+
+- name: Enable GARP notification on all devices
+  ansible.posix.sysctl:
+    name: net.ipv4.conf.all.arp_notify
+    value: "1"
+    state: present
+    sysctl_set: true
+  when: enable_garp_notify_all | bool

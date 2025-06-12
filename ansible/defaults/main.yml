@@ -24,3 +24,4 @@ systemd_networkd_update_initramfs: >-
 retag_images: true
 enable_ubuntu_hwe: "False"
 journald_system_max_use: 2G
+enable_garp_notify_all: true

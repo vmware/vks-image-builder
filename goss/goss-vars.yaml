@@ -699,6 +699,11 @@ tkg:
       "iptables -C FORWARD -m conntrack --ctorigdstport 30000:32767 -j ACCEPT":
         exit-status: 0
         timeout: 0
+      grep net.ipv4.conf.all.arp_notify /etc/sysctl.conf /etc/sysctl.d/*:
+        exit-status: 0
+        stdout: []
+        stderr: []
+        timeout: 0
     service:
       systemd-timesyncd.service:
         enabled: false
@@ -852,6 +857,11 @@ tkg:
         timeout: 0
       "iptables -C FORWARD -m conntrack --ctorigdstport 30000:32767 -j ACCEPT":
         exit-status: 0
+        timeout: 0
+      grep net.ipv4.conf.all.arp_notify /etc/sysctl.conf /etc/sysctl.d/*:
+        exit-status: 0
+        stdout: []
+        stderr: []
         timeout: 0
     service:
       sshd.service:
