@@ -20,3 +20,17 @@
 - name: Save to persist ip6tables rules
   shell: "ip6tables-restore < /etc/iptables/rules.v6"
   when: ansible_os_family == "Debian"
+
+- name: Save to persist iptables rules
+  shell: "iptables-restore < /etc/systemd/scripts/ip4save"
+  when: ansible_os_family == "VMware Photon OS"
+
+- name: Save to persist ip6tables rules
+  shell: "ip6tables-restore < /etc/systemd/scripts/ip6save"
+  when: ansible_os_family == "VMware Photon OS"
+
+- name: Ignore ICMP echo requests (pings) sent to broadcast or multicast addresses
+  ansible.posix.sysctl:
+    name: net.ipv4.icmp_echo_ignore_broadcasts
+    value: "1"
+    state: present
