@@ -28,20 +28,26 @@
     state: absent
 
 - name: Retag Container Images
-  script: files/scripts/image_retag.py --k8sSemver {{ kubernetes_semver }} --dockerVersion {{ dockerVersion }} --family "{{ ansible_os_family }}"
+  script: files/scripts/image_retag.py --k8sSemver {{ kubernetes_semver }} --dockerVersion {{ dockerVersion }} --family "{{ ansible_os_family }}" --startRegistry "{{ not (run_registry_as_service | bool) }}"
   args:
     executable: python3
+  when: retag_images | bool
 
 - name: Pin container images
   ansible.builtin.script: files/scripts/docker_registry_ops.py --pin
   register: registry_version
   args:
     executable: python3
+  when:
+    - retag_images | bool
+    - not (run_registry_as_service | bool)
 
 - name: List images
   shell: 'CONTAINERD_NAMESPACE="k8s.io" ctr --address=/var/run/containerd/containerd.sock images ls -q'
   register: container_list
+  when: retag_images | bool
 
 - name: Print containers
   debug:
     var: container_list.stdout_lines
+  when: retag_images | bool

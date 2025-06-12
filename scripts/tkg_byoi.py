@@ -114,6 +114,7 @@ def populate_jinja_args(args):
     jinja_args_map["kubernetes_version"] = jinja_args_map["kubernetes"]
     kubernetes_series = jinja_args_map["kubernetes"].split('+')[0]
     jinja_args_map["kubernetes_series"] = kubernetes_series
+    jinja_args_map["sysusr_prefix"] = "/usr"
 
     if kubernetes_series.startswith("v"):
         # Remove the leading v from version for semver module.
@@ -140,11 +141,14 @@ def populate_jinja_args(args):
     if semver.Version(k8sversion.major, k8sversion.minor, k8sversion.patch).compare("1.31.0") >= 0:
         jinja_args_map["capabilities_package_present"] = False
 
-
     images_local_host_paths = get_images_local_host_path(args)
     jinja_args_map.update(images_local_host_paths)
 
     jinja_args_map['registry_store_path'] = get_registry_store_path(args)
+
+    # TODO: change the versions to enable this feature
+    run_registry_as_service = semver.Version(k8sversion.major, k8sversion.minor, k8sversion.patch).compare("1.31.0") >= 0
+    jinja_args_map["run_registry_as_service"] = run_registry_as_service
 
     print("Jinja Args:", jinja_args_map)
 

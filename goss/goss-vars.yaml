@@ -650,6 +650,7 @@ windows:
 
 # This section contains everything unique to TKG
 tkg:
+  run_registry_as_service: true
   ubuntu:
     package:
       iptables-persistent:

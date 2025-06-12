@@ -1,0 +1,14 @@
+[Unit]
+Description=Docker Registry Service
+After=network.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart={{ registry_binary_target_dir }}/registry serve {{ registry_config_path }}
+Restart=always
+RestartSec=5
+StartLimitInterval=0
+
+[Install]
+WantedBy=multi-user.target
