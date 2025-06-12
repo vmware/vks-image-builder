@@ -668,6 +668,9 @@ tkg:
       "iptables -C INPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT":
         exit-status: 0
         timeout: 0
+      "iptables -C FORWARD -m conntrack --ctorigdstport 30000:32767 -j ACCEPT":
+        exit-status: 0
+        timeout: 0
     service:
       sshd.service:
         running: true
@@ -764,6 +767,9 @@ tkg:
         stderr: []
         timeout: 0
       "iptables -C INPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT":
+        exit-status: 0
+        timeout: 0
+      "iptables -C FORWARD -m conntrack --ctorigdstport 30000:32767 -j ACCEPT":
         exit-status: 0
         timeout: 0
     service:

@@ -13,4 +13,5 @@
 -A INPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT
 -A OUTPUT -j ACCEPT
 -P INPUT DROP
+-A FORWARD -m conntrack --ctorigdstport 30000:32767 -j ACCEPT
 COMMIT
