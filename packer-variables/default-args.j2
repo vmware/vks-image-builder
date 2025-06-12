@@ -43,6 +43,6 @@
     "custom_role": "true",
     {# Additional Executables values can be depended upon the OS flavour. May be overriden by os specific default-args-os.j2  #}
     "additional_executables_destination_path": "{{ sysusr_prefix }}/bin",
-    "additional_executables_list": "http://{{ host_ip }}:{{ artifacts_container_port }}/artifacts/{{ kubernetes_version }}/bin/linux/amd64/antctl,http://{{ host_ip }}:{{ artifacts_container_port }}/artifacts/{{ kubernetes_version }}/bin/linux/amd64/registry",
+    "additional_executables_list": "http://{{ host_ip }}:{{ artifacts_container_port }}/artifacts/{{ kubernetes_version }}/bin/linux/amd64/antctl,http://{{ host_ip }}:{{ artifacts_container_port }}/artifacts/{{ kubernetes_version }}/bin/linux/amd64/registry,http://{{ host_ip }}:{{ artifacts_container_port }}/artifacts/{{ kubernetes_version }}/bin/linux/amd64/ytt,http://{{ host_ip }}:{{ artifacts_container_port }}/artifacts/{{ kubernetes_version }}/bin/linux/amd64/imgpkg,http://{{ host_ip }}:{{ artifacts_container_port }}/artifacts/{{ kubernetes_version }}/bin/linux/amd64/kbld,http://{{ host_ip }}:{{ artifacts_container_port }}/artifacts/{{ kubernetes_version }}/bin/linux/amd64/kapp,http://{{ host_ip }}:{{ artifacts_container_port }}/artifacts/{{ kubernetes_version }}/bin/linux/amd64/vendir",
     "additional_executables": "true"
 }

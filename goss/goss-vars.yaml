@@ -663,6 +663,31 @@ tkg:
         stdout: []
         stderr: []
         timeout: 0
+      ? ytt version 2>/dev/null | awk '{split($0,a," ");split(a[3],b,"-");print b[1];}'
+      : exit-status: 0
+        stdout: []
+        stderr: []
+        timeout: 0
+      ? imgpkg version 2>/dev/null | awk '{split($0,a," ");split(a[3],b,"-");print b[1];}'
+      : exit-status: 0
+        stdout: []
+        stderr: []
+        timeout: 0
+      ? kapp version 2>/dev/null | awk '{split($0,a," ");split(a[3],b,"-");print b[1];}'
+      : exit-status: 0
+        stdout: []
+        stderr: []
+        timeout: 0
+      ? vendir version 2>/dev/null | awk '{split($0,a," ");split(a[3],b,"-");print b[1];}'
+      : exit-status: 0
+        stdout: []
+        stderr: []
+        timeout: 0
+      ? kbld version 2>/dev/null | awk '{split($0,a," ");split(a[3],b,"-");print b[1];}'
+      : exit-status: 0
+        stdout: []
+        stderr: []
+        timeout: 0
       ? grep net.ipv4.icmp_echo_ignore_broadcasts /etc/sysctl.conf /etc/sysctl.d/*
       : exit-status: 0
         stdout: []
@@ -762,6 +787,31 @@ tkg:
       isa-l:
     command:
       ? antctl version 2>/dev/null | awk '{split($0,a," ");split(a[2],b,"-");print b[1];}'
+      : exit-status: 0
+        stdout: []
+        stderr: []
+        timeout: 0
+      ? ytt version 2>/dev/null | awk '{split($0,a," ");split(a[3],b,"-");print b[1];}'
+      : exit-status: 0
+        stdout: []
+        stderr: []
+        timeout: 0
+      ? imgpkg version 2>/dev/null | awk '{split($0,a," ");split(a[3],b,"-");print b[1];}'
+      : exit-status: 0
+        stdout: []
+        stderr: []
+        timeout: 0
+      ? kapp version 2>/dev/null | awk '{split($0,a," ");split(a[3],b,"-");print b[1];}'
+      : exit-status: 0
+        stdout: []
+        stderr: []
+        timeout: 0
+      ? vendir version 2>/dev/null | awk '{split($0,a," ");split(a[3],b,"-");print b[1];}'
+      : exit-status: 0
+        stdout: []
+        stderr: []
+        timeout: 0
+      ? kbld version 2>/dev/null | awk '{split($0,a," ");split(a[3],b,"-");print b[1];}'
       : exit-status: 0
         stdout: []
         stderr: []

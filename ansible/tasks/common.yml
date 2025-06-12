@@ -143,28 +143,6 @@
     - "/etc/systemd/system/cloud-config.service.d/boot-order.conf"
     - "/etc/systemd/system/cloud-final.service.d/boot-order.conf"
 
-  # TODO: Consume caymanized imgpkg rather than open source GCM-6191
-- name: Download carvel install.sh
-  get_url:
-    url: https://carvel.dev/install.sh
-    dest: /tmp/install.sh
-    mode: "0777"
-
-- name: Create a directory for carvel tools if it does not exist
-  ansible.builtin.file:
-    path: "{{ carvel_tools }}"
-    state: directory
-    mode: "0755"
-
-- name: Install wget for Carvel tools Installation
-  command: tdnf install wget -y
-  when: ansible_os_family == "VMware Photon OS"
-
-- name: Set up carvel tools inside OVA
-  ansible.builtin.shell: K14SIO_INSTALL_BIN_DIR={{ carvel_tools }} /tmp/install.sh
-  args:
-    executable: /bin/bash
-
 - name: Unload nouveau
   template:
     src: "etc/modprobe.d/blocklist-nouveau.conf"
