@@ -92,7 +92,7 @@ class Retag():
             for prefix in self.newImagePrefix:
                 oldImage, oldPrefix, imageVersion = self.getImageInfo(image)
                 newTag = f'{prefix}{"/".join(oldPrefix.split("/")[2:])}:{imageVersion}'
-                self.retagAndPush(oldImage, newTag)
+                self.retagAndPush(oldImage, newTag, False)
             self.removeImage(oldImage)
 
 

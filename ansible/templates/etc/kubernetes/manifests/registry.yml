@@ -18,6 +18,9 @@ spec:
         - mountPath: /var/lib/registry
           name: storage-container-registry
           readOnly: false
+        - mountPath: /etc/docker/registry/config.yaml
+          name: docker-registry-config
+          readOnly: false
   hostNetwork: true
   priorityClassName: system-node-critical
   volumes:
@@ -25,3 +28,7 @@ spec:
         path: /storage/container-registry
         type: Directory
       name: storage-container-registry
+    - hostPath:
+        path: /etc/registry/config.yml
+        type: File
+      name: docker-registry-config
