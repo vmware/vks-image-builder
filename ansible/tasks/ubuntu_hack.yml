@@ -78,3 +78,25 @@
     install_recommends: true
     name: linux-generic-hwe-{{ ansible_distribution_version }}
   when: ( enable_ubuntu_hwe is defined ) and ( enable_ubuntu_hwe|bool == True )
+
+- name: Apply mtu netplan patch
+  when: ansible_distribution_version is version('24.04', '>=')
+  block:
+    - name: Copy netplan patch file
+      copy:
+        dest: /tmp/netplan.patch
+        force: true
+        content: |
+          --- /usr/lib/python3/dist-packages/cloudinit/net/netplan.py	2025-06-02 09:55:22.452857671 +0000
+          +++ /usr/lib/python3/dist-packages/cloudinit/net/netplan.py_2	2025-06-02 06:14:40.349638339 +0000
+          @@ -348,7 +348,7 @@
+                   content = header + content
+          
+                   netplan_config_changed = has_netplan_config_changed(fpnplan, content)
+          -        if not netplan_api_write_yaml_file(content):
+          +        if True
+                       fallback_write_netplan_yaml(fpnplan, content)
+          
+                   if self.clean_default:
+    - name: Apply the netplan patch
+      ansible.builtin.command: patch -i /tmp/netplan.patch /usr/lib/python3/dist-packages/cloudinit/net/netplan.py 
