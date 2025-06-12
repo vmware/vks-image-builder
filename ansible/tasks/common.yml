@@ -54,6 +54,12 @@
     dest: /usr/local/bin/kubeadm
     mode: 0755
 
+- name: Copy script kubernetes_non_root.sh
+  ansible.builtin.copy:
+    src: files/scripts/kubernetes_non_root.sh
+    dest: /etc/profile.d/kubernetes_non_root.sh
+    mode: 0644
+
 - name: Copy CIS hardening script
   copy:
     src: files/scripts/cis_hardening.sh
