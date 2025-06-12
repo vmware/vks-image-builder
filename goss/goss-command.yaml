@@ -203,9 +203,14 @@ command:
     exec: "\"/Program Files/containerd/containerd.exe\" config dump"
     exit-status: 0
     stdout:
-    - "sandbox_image = \"{{.Vars.pause_image}}\""
-    - "conf_dir = \"C:/etc/cni/net.d\""
-    - "bin_dir = \"C:/opt/cni/bin\""
+#   Disable comparing the values from `containerd config dump` command
+#   as it has a bug in 2.0 where in only default values are dumped instead
+#   of the migrated config from the loaded configuration.
+#   Ref: https://github.com/containerd/containerd/pull/11772 has the fix,
+#   Once we have a release with the above fix, the tests can be enabled again.
+#    - "sandbox_image = \"{{.Vars.pause_image}}\""
+#    - "conf_dir = \"C:/etc/cni/net.d\""
+#    - "bin_dir = \"C:/opt/cni/bin\""
     - "root = \"C:\\\\ProgramData\\\\containerd\\\\root\""
     - "state = \"C:\\\\ProgramData\\\\containerd\\\\state\""
     timeout: 30000
