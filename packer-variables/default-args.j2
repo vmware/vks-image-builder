@@ -38,5 +38,9 @@
     "remove_extra_repos": "true",
     {# Packer VM name #}
     "build_version": "{{ os_type }}-kube-{{ kubernetes_series }}-{{ ova_ts_suffix }}",
-    "custom_role": "true"
+    "custom_role": "true",
+    {# Additional Executables values can be depended upon the OS flavour. May be overriden by os specific default-args-os.j2  #}
+    "additional_executables_destination_path": "{{ sysusr_prefix }}/bin",
+    "additional_executables_list": "http://{{ host_ip }}:{{ artifacts_container_port }}/artifacts/{{ kubernetes_version }}/bin/linux/amd64/antctl",
+    "additional_executables": "true"
 }

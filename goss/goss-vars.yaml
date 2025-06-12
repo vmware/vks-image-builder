@@ -655,6 +655,11 @@ tkg:
       iptables-persistent:
       unzip:
     command:
+      ? antctl version 2>/dev/null | awk '{split($0,a," ");split(a[2],b,"-");print b[1];}'
+      : exit-status: 0
+        stdout: []
+        stderr: []
+        timeout: 0
     service:
       sshd.service:
         running: true
@@ -740,6 +745,11 @@ tkg:
       tcpdump:
       wget:
     command:
+      ? antctl version 2>/dev/null | awk '{split($0,a," ");split(a[2],b,"-");print b[1];}'
+      : exit-status: 0
+        stdout: []
+        stderr: []
+        timeout: 0
     service:
       sshd.service:
         enabled: true

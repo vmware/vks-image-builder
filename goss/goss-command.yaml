@@ -112,6 +112,13 @@ command:
     {{$key}}: {{$val}}
   {{end}}
 {{end}}
+# TKG specific changes
+{{range $name, $vers := index .Vars.tkg .Vars.OS "command"}}
+  {{ $name }}:
+  {{range $key, $val := $vers}}
+    {{$key}}: {{$val}}
+  {{end}}
+{{end}}
 {{end}} #End linux only
 
 {{ if eq .Vars.OS "windows" }} # Windows
