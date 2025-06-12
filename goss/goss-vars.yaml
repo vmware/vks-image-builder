@@ -706,6 +706,9 @@ tkg:
       systemd-timesyncd.service:
         enabled: false
         running: false
+      logredirector.service:
+        enabled: true
+        running: true
     kernel-param:
     ova:
       os_version:
@@ -720,6 +723,10 @@ tkg:
         filetype: file
         contains:
           - "/^SystemMaxUse=/"
+      "/opt/log_redirect.sh":
+        exists: true
+        filetype: file
+        contains:
   photon:
     package:
       glibc:
@@ -837,6 +844,9 @@ tkg:
       sshd-keygen.service:
         enabled: true
         running: true
+      logredirector.service:
+        enabled: true
+        running: true
     kernel-param:
     ova:
       os_version:
@@ -855,3 +865,7 @@ tkg:
         filetype: file
         contains:
           - "/^SystemMaxUse=/"
+      "/opt/log_redirect.sh":
+        exists: true
+        filetype: file
+        contains:
