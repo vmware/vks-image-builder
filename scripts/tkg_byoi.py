@@ -216,11 +216,14 @@ def copy_ova(args):
         with open(file, 'r') as fp:
             yaml_docs = yaml.safe_load_all(fp)
             for yaml_doc in yaml_docs:
-                if yaml_doc["kind"] == osimage_api_kind and yaml_doc["spec"]["os"]["name"] in args.os_type:
+                # When multiple versions of same os is supported (eg: Ubuntu 22 and 24), matching just os_name can return false postive.
+                #Example: expected would be to match ubuntu-2204 but if first OSImage file returned is that of ubuntu 24, then it will match ubuntu-2404
+                # So matching with version from OSImage (ubuntu versions have a dot in between - 22.04) as well
+                if yaml_doc["kind"] == osimage_api_kind and yaml_doc["spec"]["os"]["name"] in args.os_type and yaml_doc["spec"]["os"]["version"].replace('.','') in args.os_type:
                     new_ova_name = "{}.ova".format(
                         yaml_doc["spec"]["image"]["ref"]["name"])
     if not new_ova_name:
-        print("New OVA name not found in metadata")
+        print("Matching OSImage Spec not found in metadata")
         exit(1)
 
     old_ova_name = ''

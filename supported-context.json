@@ -2,6 +2,7 @@
     "supported_os": [
         "photon-5",
         "ubuntu-2204-efi",
+        "ubuntu-2404-efi",
         "windows-2022-efi"
     ],
     "artifacts_image": "projects.packages.broadcom.com/vsphere/iaas/kubernetes-release/1.32.0/vkr-artifact-server:v1.32.0_vmware.6-fips-vkr.2",

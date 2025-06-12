@@ -8,7 +8,7 @@ The vSphere Tanzu Kubernetes Grid Image Builder uses Hashicorp Packer to generat
 
 - vCenter Server 8, which can be any vCenter 8 instance, it does not have to be the same vCenter managing your vSphere
 - Packer requires the vSphere environment to have DHCP configured; you cannot use static IP address management
-- Tutorial uses Ubuntu 22.04 based Linux VM to generate the image
+- Tutorial uses Ubuntu 24.04 based Linux VM to generate the image
 
 ## Clone the Repository
 
@@ -128,7 +128,7 @@ NOTE: The HOST_IP must be reachable from the vCenter.
 Example:
 
 ```bash
-make build-node-image OS_TARGET=ubuntu-2204-efi TKR_SUFFIX=byoi HOST_IP=192.2.2.3 IMAGE_ARTIFACTS_PATH=/home/ubuntu/image ARTIFACTS_CONTAINER_PORT=8081
+make build-node-image OS_TARGET=ubuntu-2404-efi TKR_SUFFIX=byoi HOST_IP=192.2.2.3 IMAGE_ARTIFACTS_PATH=/home/ubuntu/image ARTIFACTS_CONTAINER_PORT=8081
 ```
 
 ## Verify the Custom Image
