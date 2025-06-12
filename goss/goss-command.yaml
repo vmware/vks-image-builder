@@ -219,7 +219,7 @@ command:
     exit-status: 0
     exec: powershell -command "(Get-ItemProperty 'HKLM:\SYSTEM\CurrentControlSet\Services\hns\State' -Name EnableCompartmentNamespace).EnableCompartmentNamespace -eq 1"
     stdout:
-    - True
+    - "True"
     timeout: 30000
   Windows Port Range is Expanded:
     exit-status: 0
