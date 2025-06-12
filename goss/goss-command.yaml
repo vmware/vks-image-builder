@@ -107,6 +107,11 @@ command:
     stdout: ["always [madvise] never"]
     stderr: []
     timeout: 0
+  # Check that OpenSSL is not set to run in FIPS mode by default
+  openssl md5 /etc/os-release:
+    exit-status: 0
+    stderr: []
+    timeout: 0
 {{end}}
 {{range $name, $vers := index .Vars .Vars.OS .Vars.PROVIDER "command"}}
   {{ $name }}:

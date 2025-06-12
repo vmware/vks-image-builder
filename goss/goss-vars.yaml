@@ -101,6 +101,7 @@ photon_4_rpms: &photon_4_rpms
 
 photon_5_rpms: &photon_5_rpms
   jq:
+  openssl-fips-provider:
 
 arch: "amd64"
 containerd_version: ""

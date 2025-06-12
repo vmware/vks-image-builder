@@ -50,3 +50,8 @@
   ansible.builtin.systemd:
     masked: true
     name: systemd-timesyncd.service
+
+- name: Disable OpenSSL FIPS module loading by default
+  ansible.builtin.file:
+    path: /etc/ssl/provider_fips.cnf
+    state: absent
