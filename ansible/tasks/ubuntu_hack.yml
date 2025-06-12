@@ -94,7 +94,7 @@
           
                    netplan_config_changed = has_netplan_config_changed(fpnplan, content)
           -        if not netplan_api_write_yaml_file(content):
-          +        if True
+          +        if True:
                        fallback_write_netplan_yaml(fpnplan, content)
           
                    if self.clean_default:
