@@ -6,7 +6,6 @@ import json
 import os
 import shutil
 import semver
-import glob
 
 import yaml
 from jinja2 import Environment, BaseLoader
