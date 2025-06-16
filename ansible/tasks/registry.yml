@@ -1,4 +1,5 @@
-# Copyright 2024 VMware, Inc.
+# © Broadcom. All Rights Reserved.
+# The term “Broadcom” refers to Broadcom Inc. and/or its subsidiaries.
 # SPDX-License-Identifier: MPL-2.0
 
 - name: Create registry directory structure
@@ -28,6 +29,12 @@
 
 - name: Retag Container Images
   script: files/scripts/image_retag.py --k8sSemver {{ kubernetes_semver }} --dockerVersion {{ dockerVersion }} --family "{{ ansible_os_family }}"
+  args:
+    executable: python3
+
+- name: Pin container images
+  ansible.builtin.script: files/scripts/docker_registry_ops.py --pin
+  register: registry_version
   args:
     executable: python3
 
