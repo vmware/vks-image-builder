@@ -18,3 +18,12 @@ file:
     - {{.}}
   {{end}}
 {{end}}
+# TKG specific changes.
+{{range $name, $vers := index .Vars.tkg .Vars.OS "files"}}
+  {{ $name }}:
+    exists: {{ $vers.exists }}
+    filetype: {{ $vers.filetype }}
+    contains: {{ range $vers.contains}}
+    - {{.}}
+  {{end}}
+{{end}}
