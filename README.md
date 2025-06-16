@@ -1,6 +1,6 @@
-# vSphere Tanzu Kubernetes Grid Image Builder
+# vSphere Kubernetes Service Image Builder
 
-vSphere Tanzu Kubernetes Grid Image Builder provides tooling that can be used to build node images for use with [vSphere with Tanzu][vsphere-with-tanzu].
+vSphere Kubernetes Service Image Builder provides tooling that can be used to build node images for use with [vSphere Kubernetes Service][vsphere-kubernetes-service-workloads].
 
 ## Content
 
@@ -46,7 +46,7 @@ Below are the prerequisites for building the node images
 
 [supported-version.txt](supported-version.txt) holds information about the kubernetes release version supported.
 
-[supported-context.json](supported-context.json) holds information about the context for the supported Kubernetes versions which includes supported OS targets along with the artifacts container image URL. This file will be updated when a new Kubernetes version is supported by the **vSphere Tanzu** team.
+[supported-context.json](supported-context.json) holds information about the context for the supported Kubernetes versions which includes supported OS targets along with the artifacts container image URL. This file will be updated when a new Kubernetes version is supported by the **vSphere Kubernetes Service** team.
 
 ## Make targets
 
@@ -107,9 +107,9 @@ make build-image-builder-container PRINT_HELP=y # To show the help information f
 make build-image-builder-container # To create the image builder container.
 ```
 
-- `make build-node-image` is used to build the vSphere Tanzu compatible node image for a Kubernetes version.
+- `make build-node-image` is used to build the vSphere Kubernetes Service compatible node image for a Kubernetes version.
   - Host IP is required to pull the required Carvel Packages during the image build process and the default artifacts container port is 8080 which can be configured through `ARTIFACTS_CONTAINER_PORT`.
-  - TKR(Tanzu Kubernetes Release) Suffix is used to distinguish images built on the same version for a different purpose. Maximum suffix length can be 8 characters.
+  - VKr(vSphere Kubernetes Release) Suffix is used to distinguish images built on the same version for a different purpose. Maximum suffix length can be 8 characters.
 
 ```bash
 make build-node-image PRINT_HELP=y # To show the help information for this target.
@@ -130,7 +130,7 @@ For Windows support you may refer to [Windows tutorial](docs/windows.md)
 
 ## Contributing
 
-The vSphere Tanzu Kubernetes Grid Image Builder project team welcomes contributions from the community. Before you start working with VMware Image Builder, please read our [Developer Certificate of Origin][dco]. All contributions to this repository must be signed as described on that page. Your signature certifies that you wrote the patch or have the right to pass it on as an open-source patch. For more detailed information, please refer to [CONTRIBUTING][contributing].
+The vSphere Kubernetes Service Image Builder project team welcomes contributions from the community. Before you start working with VMware Image Builder, please read our [Developer Certificate of Origin][dco]. All contributions to this repository must be signed as described on that page. Your signature certifies that you wrote the patch or have the right to pass it on as an open-source patch. For more detailed information, please refer to [CONTRIBUTING][contributing].
 
 ## License
 
@@ -138,13 +138,13 @@ This project is available under the [Mozilla Public License, V2.0][project-licen
 
 ## Support
 
-VMware will support issues with the vSphere Tanzu Kubernetes Grid Image Builder, but you are responsible for any issues relating to your image customizations and custom applications. You can open VMware Support cases for TKG clusters built with a custom Tanzu Kubernetes release image, however, VMware Support will be limited to best effort only, with VMware Support having full discretion over how much effort to put in to troubleshooting. On opening a case with VMware Support regarding any issue with a cluster built with a custom Tanzu Kubernetes release image, VMware Support asks that you provide support staff with the exact changes made to the base image.
+VMware will support issues with the vSphere Kubernetes Service Image Builder, but you are responsible for any issues relating to your image customizations and custom applications. You can open VMware Support cases for VKS clusters built with a custom vSphere Kubernetes release image, however, VMware Support will be limited to best effort only, with VMware Support having full discretion over how much effort to put in to troubleshooting. On opening a case with VMware Support regarding any issue with a cluster built with a custom vSphere Kubernetes release image, VMware Support asks that you provide support staff with the exact changes made to the base image.
 
 [//]: Links
 
 [contributing]: CONTRIBUTING.md
 [dco]: https://cla.vmware.com/dco
 [project-license]: LICENSE.txt
-[vsphere-with-tanzu]: https://techdocs.broadcom.com/us/en/vmware-cis/vsphere/vsphere-supervisor/8-0/vsphere-supervisor-services-and-workloads-8-0.html
+[vsphere-kubernetes-service-workloads]: https://techdocs.broadcom.com/us/en/vmware-cis/vsphere/vsphere-supervisor/8-0/vsphere-supervisor-services-and-workloads-8-0.html
 [supported-version]: ./supported-version.txt
 [vm-admin-guide]: https://techdocs.broadcom.com/us/en/vmware-cis/vsphere/vsphere/8-0/vsphere-virtual-machine-administration-guide-8-0.html

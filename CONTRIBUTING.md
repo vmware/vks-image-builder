@@ -1,10 +1,10 @@
-# Contributing to vSphere Tanzu Kubernetes Grid Image Builder
+# Contributing to vSphere Kubernetes Service Image Builder
 
 We welcome contributions from the community and first want to thank you for taking the time to contribute!
 
 Please familiarize yourself with the [Code of Conduct][code-of-conduct] before contributing.
 
-Before you start working with vSphere Tanzu Kubernetes Grid Image Builder, please read our [Developer Certificate of Origin][dco]. All contributions to this repository must be signed as described on that page. Your signature certifies that you wrote the patch or have the right to pass it on as an open-source patch.
+Before you start working with vSphere Kubernetes Service Image Builder, please read our [Developer Certificate of Origin][dco]. All contributions to this repository must be signed as described on that page. Your signature certifies that you wrote the patch or have the right to pass it on as an open-source patch.
 
 ## Ways to contribute
 

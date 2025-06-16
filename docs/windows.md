@@ -1,6 +1,6 @@
-# Building Windows Image Using the vSphere Tanzu Kubernetes Grid Image Builder
+# Building Windows Image Using the vSphere Kubernetes Service Image Builder
 
-This tutorial describes how to use the vSphere Tanzu Kubernetes Grid Image Builder to build Windows OVA image for use with [vSphere Kubernetes Service 3.3][vsphere-kubernetes-service-release-notes] and above. Windows container workload support is only available in Kubernetes release v1.31 and above.
+This tutorial describes how to use the vSphere Kubernetes Service Image Builder to build Windows OVA image for use with [vSphere Kubernetes Service 3.3][vsphere-kubernetes-service-release-notes] and above. Windows container workload support is only available in Kubernetes release v1.31 and above.
 
 ## Use case
 
@@ -9,7 +9,7 @@ I want to build a Windows Node Image to deploy a node pool for Windows container
 ## Requirements
 
 - Check the [prerequisites][prerequisites]
-- vCenter Server 8, which can be any vCenter 8 instance, it does not have to be the same vCenter managing your vSphere with Tanzu environment
+- vCenter Server 8, which can be any vCenter 8 instance, it does not have to be the same vCenter managing your vSphere Kubernetes Service environment
 - Packer requires the vSphere environment to have DHCP configured; you cannot use static IP address management
 - A recent Windows Server 22H2 ISO image. Download through your Microsoft Developer Network (MSDN) or Volume Licensing (VL) account. The use of evaluation media is not supported or recommended.
 - VMware Tools ISO Image
@@ -17,7 +17,7 @@ I want to build a Windows Node Image to deploy a node pool for Windows container
 
 ## Prepare for Image Builder
 
-Follow the [standard tutorial][tutorials-base] to prepare the environment for vSphere Tanzu Kubernetes Grid Image Builder.
+Follow the [standard tutorial][tutorials-base] to prepare the environment for vSphere Kubernetes Service Image Builder.
 
 ## Get Windows Server and VMware Tools ISO
 
@@ -189,9 +189,9 @@ You should see the image being built in the datacenter, cluster, folder that you
 
 Download the custom image from local storage or from the vCenter Server.
 
-In your vSphere with Tanzu environment, create a local content library and upload the custom image there.
+In your vSphere Kubernetes Service environment, create a local content library and upload the custom image there.
 
-Refer to the documentation for [creating a local content library][tkgs-service-with-supervisor] for use with vSphere Kubernetes Service.
+Refer to the documentation for [creating a local content library][vsphere-service-with-supervisor] for use with vSphere Kubernetes Service.
 
 You need to upload both Linux and Windows node images to the local content library as the Linux node image will be
 used to deploy VMs for Kubernetes Control Plane and Linux node pools (if any).
@@ -257,5 +257,5 @@ You may refer to [this link][supervisor-8-release-notes] for generic known issue
 [windows-setup-ans-file]: https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/update-windows-settings-and-scripts-create-your-own-answer-file-sxs?view=windows-11
 [ib-windows-unattended-xml]: https://raw.githubusercontent.com/kubernetes-sigs/image-builder/refs/heads/main/images/capi/packer/ova/windows/windows-2022-efi/autounattend.xml
 [gather-logs]: https://knowledge.broadcom.com/external/article/345464/gathering-logs-for-vsphere-with-tanzu.html
-[tkgs-service-with-supervisor]: https://techdocs.broadcom.com/us/en/vmware-cis/vsphere/vsphere-supervisor/8-0/using-tkg-service-with-vsphere-supervisor.html
+[vsphere-service-with-supervisor]: https://techdocs.broadcom.com/us/en/vmware-cis/vsphere/vsphere-supervisor/8-0/using-tkg-service-with-vsphere-supervisor.html
 [supervisor-8-release-notes]:https://techdocs.broadcom.com/us/en/vmware-cis/vsphere/vsphere-supervisor/8-0/release-notes/vmware-tkrs-release-notes.html
