@@ -569,8 +569,8 @@ windows:
     windows-service:
 
     files:
-      'c:/program files/Cloudbase Solutions/Cloudbase-init/conf/cloudbase-init.conf': 
-        exists: true
+      ? "c:/program files/Cloudbase Solutions/Cloudbase-init/conf/cloudbase-init.conf"
+      : exists: true
         filetype: file
         contains:
           - "COM2,115200,N,8"
@@ -603,8 +603,8 @@ windows:
           - "cloudbaseinit.plugins.common.localscripts.LocalScriptsPlugin"
           - "cloudbaseinit.plugins.windows.createuser.CreateUserPlugin"
           - "cloudbaseinit.plugins.windows.extendvolumes.ExtendVolumesPlugin"
-      'c:/program files/Cloudbase Solutions/Cloudbase-init/conf/cloudbase-init-unattend.conf': 
-        exists: true
+      ? "c:/program files/Cloudbase Solutions/Cloudbase-init/conf/cloudbase-init-unattend.conf"
+      : exists: true
         filetype: file
         contains:
           - "metadata_services=cloudbaseinit.metadata.services.vmwareguestinfoservice.VMwareGuestInfoService"
@@ -641,8 +641,8 @@ windows:
           - "cloudbaseinit.plugins.common.localscripts.LocalScriptsPlugin"
           - "cloudbaseinit.plugins.windows.createuser.CreateUserPlugin"
           - "cloudbaseinit.plugins.windows.extendvolumes.ExtendVolumesPlugin"
-      'c:/program files/Cloudbase Solutions/Cloudbase-init/conf/cloudbase-init-unattend.conf': 
-        exists: true
+      ? "c:/program files/Cloudbase Solutions/Cloudbase-init/conf/cloudbase-init-unattend.conf"
+      : exists: true
         filetype: file
         contains:
           - "metadata_services=cloudbaseinit.metadata.services.base.EmptyMetadataService"
@@ -735,7 +735,7 @@ tkg:
         running: true
       sshd-keygen.service:
         enabled: true
-        running: true
+        running: false
     kernel-param:
     ova:
       os_version:
