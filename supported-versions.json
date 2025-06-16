@@ -30,16 +30,26 @@
         }
     },
     "v1.29.4+vmware.3-fips.1": {
-       "supported_os": [
-           "photon-5",
-           "ubuntu-2204-efi"
-       ],
-       "artifacts_image": "projects.packages.broadcom.com/tkg/tkg-vsphere-linux-resource-bundle:v1.29.4_vmware.3-fips.1-tkg.1",
-       "docker_build_args": {
-           "IMAGE_BUILDER_COMMIT_ID": "d89cd8eee2e28bd77f138e7cb09869ff33ca7d5e"
-       }
-   },
-   "v1.30.1+vmware.1-fips": {
+        "supported_os": [
+            "photon-5",
+            "ubuntu-2204-efi"
+        ],
+        "artifacts_image": "projects.packages.broadcom.com/tkg/tkg-vsphere-linux-resource-bundle:v1.29.4_vmware.3-fips.1-tkg.1",
+        "docker_build_args": {
+            "IMAGE_BUILDER_COMMIT_ID": "d89cd8eee2e28bd77f138e7cb09869ff33ca7d5e"
+        }
+    },
+    "v1.29.9+vmware.1-fips": {
+        "supported_os": [
+            "photon-5",
+            "ubuntu-2204-efi"
+        ],
+        "artifacts_image": "vmware.io/tkg-vsphere-linux-resource-bundle:v1.29.9_vmware.1-fips-dev.1",
+        "docker_build_args": {
+            "IMAGE_BUILDER_COMMIT_ID": "d89cd8eee2e28bd77f138e7cb09869ff33ca7d5e"
+        }
+    },
+    "v1.30.1+vmware.1-fips": {
         "supported_os": [
             "photon-5",
             "ubuntu-2204-efi"
