@@ -7,7 +7,7 @@
     executable: python3
 
 - name: Start docker registry
-  shell: 'ctr -n k8s.io run -d --null-io --net-host --mount type=bind,src=/storage/container-registry,dst=/var/lib/registry,options=rbind:rw docker.io/vmware/docker-registry:2.7.1 docker-registry /bin/registry serve /etc/docker/registry/config.yaml'
+  shell: 'ctr -n k8s.io run -d --null-io --net-host --mount type=bind,src=/storage/container-registry,dst=/var/lib/registry,options=rbind:rw docker.io/vmware/docker-registry:{{ dockerVersion }} docker-registry /bin/registry serve /etc/docker/registry/config.yaml'
 
 - name: Copy carvel packages and images to Embedded registry
   script: files/scripts/utkg_download_carvel_packages.py --addonImageList {{ addon_image_list }} --addonLocalImageList {{ localhost_addon_image_list }}
