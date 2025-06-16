@@ -24,6 +24,9 @@ RUN for package in unzip git wget build-essential python3-pip jq coreutils opens
 # Install Semver
 RUN pip3 install semver jinja2 jinja2-time
 
+# Install Windows Remote Management 
+RUN pip3 install pywinrm
+
 # Install ovftool
 # TODO: this URL might change or expire so need to look at better way to install it on the container.
 RUN wget https://vdc-download.vmware.com/vmwb-repository/dcr-public/2ee5a010-babf-450b-ab53-fb2fa4de79af/2a136212-2f83-4f5d-a419-232f34dc08cf/VMware-ovftool-4.4.3-18663434-lin.x86_64.zip
