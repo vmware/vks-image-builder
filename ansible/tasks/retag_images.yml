@@ -1,4 +1,5 @@
-# Copyright 2023 VMware, Inc.
+# (c) Broadcom. All Rights Reserved.
+# The term “Broadcom” refers to Broadcom Inc. and/or its subsidiaries.
 # SPDX-License-Identifier: MPL-2.0
 ---
 - name: Retag Container Images
@@ -11,6 +12,11 @@
 
 - name: Copy carvel packages and images to Embedded registry
   script: files/scripts/utkg_download_carvel_packages.py --addonImageList {{ addon_image_list }} --addonLocalImageList {{ localhost_addon_image_list }}
+  args:
+    executable: python3
+
+- name: Pin container images
+  ansible.builtin.script: files/scripts/docker_registry_ops.py --pin
   args:
     executable: python3
 
