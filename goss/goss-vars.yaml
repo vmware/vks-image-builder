@@ -658,6 +658,9 @@ tkg:
       sshd.service:
         running: true
         enabled: true
+      systemd-timesyncd.service:
+        enabled: false
+        running: false
     kernel-param:
     ova:
       os_version:
