@@ -38,5 +38,6 @@
     "remove_extra_repos": "true",
     {# Packer VM name #}
     "build_version": "{{ os_type }}-kube-{{ kubernetes_series }}-{{ ova_ts_suffix }}",
-    "custom_role": "true"
+    "custom_role": "true",
+    "output_dir": "/image-builder/images/capi/output/{{ os_type }}-kube-{{ kubernetes_series }}-{{ ova_ts_suffix }}"
 }
