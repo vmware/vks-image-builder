@@ -39,3 +39,14 @@
     executable: /bin/bash
 
 - import_tasks: disable_pwd_rotation.yml
+
+# Gather list of installed packages
+- name: Gather the package facts
+  ansible.builtin.package_facts:
+    manager: auto
+
+- name: Copy installed package details to local file
+  ansible.builtin.copy:
+    content: "{{ ansible_facts.packages | to_nice_json }}"
+    dest: "{{ output_dir }}/package_list.json"
+  delegate_to: localhost
