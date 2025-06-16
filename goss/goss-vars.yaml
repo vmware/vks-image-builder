@@ -655,6 +655,14 @@ tkg:
       iptables-persistent:
       unzip:
     command:
+      ? grep net.ipv4.icmp_echo_ignore_broadcasts /etc/sysctl.conf /etc/sysctl.d/*
+      : exit-status: 0
+        stdout: []
+        stderr: []
+        timeout: 0
+      "iptables -C INPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT":
+        exit-status: 0
+        timeout: 0
     service:
       sshd.service:
         running: true
@@ -740,6 +748,14 @@ tkg:
       tcpdump:
       wget:
     command:
+      ? grep net.ipv4.icmp_echo_ignore_broadcasts /etc/sysctl.conf /etc/sysctl.d/*
+      : exit-status: 0
+        stdout: []
+        stderr: []
+        timeout: 0
+      "iptables -C INPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT":
+        exit-status: 0
+        timeout: 0
     service:
       sshd.service:
         enabled: true
