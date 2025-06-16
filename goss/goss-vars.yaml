@@ -732,7 +732,7 @@ tkg:
     service:
       sshd.service:
         enabled: true
-        running: true
+        running: false
       sshd-keygen.service:
         enabled: true
         running: false
