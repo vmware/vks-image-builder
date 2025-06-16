@@ -5,7 +5,7 @@ ARG BASE_IMAGE=library/photon:5.0
 FROM ${BASE_IMAGE}
 
 ARG IMAGE_BUILDER_COMMIT_ID=""
-ARG ANSIBLE_VERSION=2.15.10
+ARG ANSIBLE_VERSION=2.15.13
 ARG IMAGE_BUILDER_REPO="https://github.com/kubernetes-sigs/image-builder.git"
 ARG IMAGE_BUILDER_REPO_NAME=image-builder
 ARG PACKER_GITHUB_API_TOKEN=""
@@ -19,7 +19,7 @@ RUN tdnf -y update
 RUN tdnf -y upgrade
 
 # Install required packages
-RUN for package in unzip git wget build-essential python3-pip jq coreutils openssh-server xorriso; do tdnf -y install "$package"; done
+RUN for package in unzip git wget build-essential python3-pip jq coreutils openssh-server xorriso grep ; do tdnf -y install "$package" --refresh; done
 
 # Install Semver
 RUN pip3 install semver jinja2 jinja2-time

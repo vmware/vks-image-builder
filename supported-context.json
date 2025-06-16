@@ -5,6 +5,6 @@
     ],
     "artifacts_image": "vmware.io/tkg-vsphere-linux-resource-bundle:v1.28.15_vmware.1-fips-dev.1",
     "docker_build_args": {
-        "IMAGE_BUILDER_COMMIT_ID": "d89cd8eee2e28bd77f138e7cb09869ff33ca7d5e"
+        "IMAGE_BUILDER_COMMIT_ID": "49377913fe89429542805fd809ca1eabd5a93743"
     }
 }
