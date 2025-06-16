@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
-# Copyright 2023 VMware, Inc.
+# © Broadcom. All Rights Reserved.
+# The term “Broadcom” refers to Broadcom Inc. and/or its subsidiaries.
 # SPDX-License-Identifier: MPL-2.0
 
 import argparse
@@ -93,6 +94,17 @@ def create_non_addon_ovf_properties():
             key = Path(file).stem
             custom_ovf_properties[key] = convert_to_xml(data)
 
+def create_non_addon_VKr_constraints_ovf_properties():
+    filenames = [ join(tkg_core_directory,"vmware-system.kr.destination-semver-constraint.json"),
+                 join(tkg_core_directory,"vmware-system.kr.override-k8s-semver-version.json")]
+    for file in filenames:
+        try:
+            with open(file) as f:
+                data = json.dumps(json.load(f)).replace('"','')
+                key = Path(file).stem
+                custom_ovf_properties[key] = convert_to_xml(compress_and_base64_encode(data))
+        except IOError:
+            print("couldn't find/read file: ",file)   
 
 # fetch tkr apiversion and tkr version
 def fetch_tkr_data():
@@ -328,6 +340,7 @@ def main():
     set_versions(args)
     create_utkg_tkr_metadata_ovf_properties()
     create_non_addon_ovf_properties()
+    create_non_addon_VKr_constraints_ovf_properties()
     write_properties_to_file(args.outfile)
     print(custom_ovf_properties)
 
