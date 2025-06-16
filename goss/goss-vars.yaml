@@ -668,6 +668,13 @@ tkg:
           package:
             dkms:
       kernel-param:
+      common-files:
+    files:
+      "/etc/systemd/journald.conf":
+        exists: true
+        filetype: file
+        contains:
+          - "/^SystemMaxUse=/"
   photon:
     package:
       glibc:
@@ -754,3 +761,9 @@ tkg:
           package:
             dkms:
       kernel-param:
+    files:
+      "/etc/systemd/journald.conf":
+        exists: true
+        filetype: file
+        contains:
+          - "/^SystemMaxUse=/"
