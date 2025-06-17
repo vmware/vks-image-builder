@@ -1,6 +1,6 @@
 # Building Windows Image Using the vSphere Kubernetes Service Image Builder
 
-This tutorial describes how to use the vSphere Kubernetes Service Image Builder to build Windows OVA image for use with [vSphere Kubernetes Service 3.3][vsphere-kubernetes-service-release-notes] and above. Windows container workload support is only available in Kubernetes release v1.31 and above.
+This tutorial describes how to use the vSphere Kubernetes Service Image Builder to build Windows OVA image for use with [vSphere Kubernetes Service 3.4][vsphere-kubernetes-service-release-notes] and above. Windows container workload support is only available in Kubernetes release v1.31 and above.
 
 ## Use case
 
@@ -200,11 +200,11 @@ Note: You should disable Security Policy for this content library for Windows im
 
 ## Create a cluster with Windows Node Pool
 
-You may refer to [vSphere Kubernetes Service 3.3 documentation][vsphere-kubernetes-service-release-notes] for more information on how to deploy a cluster with Windows Node Pool with vSphere Kubernetes Service 3.3 and above.
+You may refer to [vSphere Kubernetes Service 3.4 documentation][vsphere-kubernetes-service-release-notes] for more information on how to deploy a cluster with Windows Node Pool with vSphere Kubernetes Service 3.4 and above.
 
 ## Known Issues for Windows Container Workload Support
 
-### Kubernetes Release v1.32
+### Kubernetes Release v1.33
 
 - The minimum vmclass should be best-effort-large for Windows Worker Node
 
@@ -212,24 +212,6 @@ You may refer to [vSphere Kubernetes Service 3.3 documentation][vsphere-kubernet
 
   Resolution:
   Switch to a vmclass configured with more resources.
-
-- After a node reboot, stateful windows Application pods can be in failed (Unknown) state.
-
-  Symptoms: The windows stateful pod description shows failed mount with error as following:
-
-  ```bash
-  Warning FailedMount 23m kubelet MountVolume.MountDevice failed for volume "pvc-63a2bde4-8183-40ac-b115-247ae64b6cb4" : rpc error: code = Internal desc = error mounting volume. Parameters: {7e1b7769-d86d-4b8a-b9a6-a1a303021b43-63a2bde4-8183-40ac-b115-247ae64b6cb4 ntfs
-  ```
-
-  Relevant log’s location: logs of vsphere-csi-node `kubectl logs $pod_name` or `kubectl describe` the application pod it self.
-
-  Workaround: After restart if pod is in unknown state, follow these steps:
-
-  1. cordon the node with command kubectl cordon <\<*node*\>>
-
-  2. delete the pod, let pod schedule on other node and wait until pod is running
-
-  3. uncordon node with cmd : kubectl uncordon <\<*node*\>>
 
 - Upgrade of some linux pods will not complete when using 1 control plane (linux) and 1 worker node (windows) configuration.
 
@@ -242,6 +224,24 @@ You may refer to [vSphere Kubernetes Service 3.3 documentation][vsphere-kubernet
   ```
 
   Workaround: Configure with additional control plane nodes or with another node pool that has linux nodes.
+
+- Post Windows Node reboot, Antrea Agent pod is unable to reconcile and causes the applications to stop working on the node.
+
+  Symptoms: Antrea Agent pod is stuck in CLBO. Antrea agent pod shows the following logs:
+
+  ```
+  "Failed to create OVS bridge" err="no connection"
+  ```
+
+  Workaround:
+  1. Pause Antrea Package Install by setting `spec.paused: true`, e.g, `kubectl --kubeconfig=<cluster-kubeconfig> edit pkgi -n vmware-system-tkg <antrea-package>`
+  2. Check which ConfigMap is attached on DaemonSet antrea-agent-windows on field: spec.template.spec.volumes with name "antrea-agent-windows"
+  3. Update the ConfigMap identified in step 2 with the below settings, search keywords "Run-AntreaOVS.ps1: ", then do the replacement as below
+  - Replace line `if ( !( Get-Process ovsdb-server ) ) {`  to `if ( !( Get-Process ovsdb-server -ErrorAction SilentlyContinue ) ) {`
+  - Replace line `if ( !( Get-Process ovs-vswitchd ) ) {` to `if ( !( Get-Process ovs-vswitchd -ErrorAction SilentlyContinue ) ) {`
+  4. Restart the "antrea-agent" Pod facing the issue.
+  5. Unpause the Antrea Package Install by removing the entry "spec.paused: true"
+  6. Post Antrea Pod comes up succesfully, if `vsphere-csi-node-windows` still shows in CLBO state, restart the CSI pod.
 
 ### Generic Known Issues
 
