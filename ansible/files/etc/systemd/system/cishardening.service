@@ -1,0 +1,11 @@
+[Unit]
+Description=CIS hardening service
+Before=kubelet.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/cis_hardening.sh
+TimeoutSec=300
+
+[Install]
+WantedBy=multi-user.target

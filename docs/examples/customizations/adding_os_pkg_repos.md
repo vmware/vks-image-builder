@@ -15,7 +15,7 @@ Configuration of OS packages and sources/repositories is exposed as packer varia
 
 To add new packages [kubernetes image builder][kubernetes-image-builder] provides `extra_rpms` and `extra_debs` packer variables for Photon and Ubuntu respectively.
 
-To add new packages to Ubuntu 22.04, add the packages to the packer variables in the [default-args-ubuntu-2204-efi.j2][default-args-ubuntu-2204-efi] file as shown below.
+To add new packages to Ubuntu 24.04, add the packages to the packer variables in the [default-args-ubuntu-2404-efi.j2][default-args-ubuntu-2404-efi] file as shown below.
 
 ```jinja
     "extra_debs": "existing_packages pkg1 pkg2"
@@ -61,7 +61,6 @@ _**Note**: The location of default configuration specific to OS follows the path
   ```
 
   - For **Ubuntu** sources, create a new file called `ubuntu.list` in the `repos` folder. Refer to the official ubuntu [documentation][ubuntu-sources-doc] for more information.
-    - _**Note**: `jammy` is for ubuntu 22.04 so this needs to be changed if the ubuntu version is also changed, example for ubuntu 20.04 it is `focal`_
 
 ```text
 deb <internal_source_url> jammy main restricted universe
@@ -75,7 +74,7 @@ deb <internal_source_url> jammy-updates main restricted
 {
     {% if os_type == "photon-5" %}
     "extra_repos": "/image-builder/images/capi/image/ansible/files/repos/photon.repo"
-    {% elif os_type == "ubuntu-2204-efi" %}
+    {% elif os_type == "ubuntu-2404-efi" %}
     "extra_repos": "/image-builder/images/capi/image/ansible/files/repos/ubuntu.list"
     {% endif %}
 }
@@ -95,8 +94,8 @@ To remove the extra repositories/sources that were configured during the image b
     "remove_extra_repos": true
     {% if os_type == "photon-5" %}
     "extra_repos": "/image-builder/images/capi/image/ansible/files/repos/photon.repo"
-    {% elif os_type == "ubuntu-2204-efi" %}
-    "extra_repos": "/image-builder/images/capi/image/ansible/files/repos/ubuntu.list"
+    {% elif os_type == "ubuntu-2404-efi" %}
+    "extra_repos": "/image-builder/images/capi/image/ansible/files/repos/ubuntu.sources"
     {% endif %}
 }
 ```
@@ -108,7 +107,7 @@ To remove the extra repositories/sources that were configured during the image b
 [jinja]: https://jinja.palletsprojects.com/en/3.1.x/
 [kubernetes-image-builder]: https://github.com/kubernetes-sigs/image-builder/
 [photon-repo-doc]: https://vmware.github.io/photon/assets/files/html/3.0/photon_admin/adding-a-new-repository.html
-[ubuntu-sources-doc]: https://manpages.ubuntu.com/manpages/focal/man5/sources.list.5.html
-[default-args-ubuntu-2204-efi]: ../../packer-variables/ubuntu-2204-efi/default-args-ubuntu-2204-efi.j2
+[ubuntu-sources-doc]: https://manpages.ubuntu.com/manpages/noble/man5/sources.list.5.html#deb822-style%20format
+[default-args-ubuntu-2404-efi]: ../../packer-variables/ubuntu-2404-efi/default-args-ubuntu-2404-efi.j2
 [default-args-photon-5]: ../../packer-variables/photon-5/default-args-photon-5.j2
 [packer-variables]: ./../../packer-variables/

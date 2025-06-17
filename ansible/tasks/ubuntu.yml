@@ -2,11 +2,35 @@
 # The term “Broadcom” refers to Broadcom Inc. and/or its subsidiaries.
 # SPDX-License-Identifier: MPL-2.0
 ---
-- name: Modify /bin/sh to point to bash instead of dash
-  shell: "{{ item }}"
-  with_items:
-    - echo "dash dash/sh boolean false" |  debconf-set-selections
-    - DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
+- name: Task specific to Ubuntu 22.04 and lower
+  when: ansible_distribution_version is version('22.04', '<=')
+  block:
+    - name: Modify /bin/sh to point to bash instead of dash
+      shell: "{{ item }}"
+      with_items:
+        - echo "dash dash/sh boolean false" |  debconf-set-selections
+        - DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
+
+- name: Task specific to Ubuntu 24.04 and above
+  when: ansible_distribution_version is version('24.04', '>=')
+  block:
+    - name: Modify /bin/sh to point to bash instead of dash - Ubuntu 24.04 and above
+      ansible.builtin.file:
+        src: bash
+        dest: /bin/sh
+        state: link
+
+    - name: Mask lxd-installer socket unit
+      ansible.builtin.systemd:
+        masked: true
+        state: stopped
+        name: lxd-installer.socket
+
+    - name: Disable apport service
+      ansible.builtin.systemd:
+        name: apport.service
+        enabled: false
+        state: stopped
 
 - name: Mask systemd-timesyncd unit
   ansible.builtin.systemd:

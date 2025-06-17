@@ -8,7 +8,7 @@ logging.basicConfig(format='%(message)s', level=logging.DEBUG)
 
 
 class Retag():
-    def __init__(self, k8sSemver, dockerVersion, family):
+    def __init__(self, k8sSemver, dockerVersion, family, startRegistry=True):
         self.k8sSemver = k8sSemver
         self.k8sSeries = re.match('^([0-9]+\.[0-9]+)', k8sSemver[1:]).groups(1)[0]
         self.dockerVersion = dockerVersion
@@ -20,13 +20,17 @@ class Retag():
         self.imageList = self.listImages()
         logging.info(f"Existing images: {self.imageList}")
 
-        self.docker()
+        if startRegistry:
+            self.docker()
+
         registry = localRegistry(self.dockerVersion)
-        registry.start()
+        if startRegistry:
+            registry.start()
 
         self.k8s()
 
-        registry.stop()
+        if startRegistry:
+            registry.stop()
 
         logging.info("Retagged images list:")
         logging.info(self.listImages())
@@ -88,7 +92,7 @@ class Retag():
             for prefix in self.newImagePrefix:
                 oldImage, oldPrefix, imageVersion = self.getImageInfo(image)
                 newTag = f'{prefix}{"/".join(oldPrefix.split("/")[2:])}:{imageVersion}'
-                self.retagAndPush(oldImage, newTag)
+                self.retagAndPush(oldImage, newTag, False)
             self.removeImage(oldImage)
 
 
@@ -129,9 +133,11 @@ def main():
     parser.add_argument('--k8sSemver')
     parser.add_argument('--dockerVersion')
     parser.add_argument('--family')
+    parser.add_argument('--startRegistry')
     args = parser.parse_args()
 
-    Retag(args.k8sSemver, args.dockerVersion, args.family)
+    start_registry = args.startRegistry.lower() in ("yes", "true", "t", "1")
+    Retag(args.k8sSemver, args.dockerVersion, args.family, start_registry)
 
 
 if __name__ == "__main__":

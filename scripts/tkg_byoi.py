@@ -114,6 +114,7 @@ def populate_jinja_args(args):
     jinja_args_map["kubernetes_version"] = jinja_args_map["kubernetes"]
     kubernetes_series = jinja_args_map["kubernetes"].split('+')[0]
     jinja_args_map["kubernetes_series"] = kubernetes_series
+    jinja_args_map["sysusr_prefix"] = "/usr"
 
     if kubernetes_series.startswith("v"):
         # Remove the leading v from version for semver module.
@@ -140,11 +141,14 @@ def populate_jinja_args(args):
     if semver.Version(k8sversion.major, k8sversion.minor, k8sversion.patch).compare("1.31.0") >= 0:
         jinja_args_map["capabilities_package_present"] = False
 
-
     images_local_host_paths = get_images_local_host_path(args)
     jinja_args_map.update(images_local_host_paths)
 
     jinja_args_map['registry_store_path'] = get_registry_store_path(args)
+
+    # TODO: change the versions to enable this feature
+    run_registry_as_service = semver.Version(k8sversion.major, k8sversion.minor, k8sversion.patch).compare("1.31.0") >= 0
+    jinja_args_map["run_registry_as_service"] = run_registry_as_service
 
     print("Jinja Args:", jinja_args_map)
 
@@ -212,11 +216,14 @@ def copy_ova(args):
         with open(file, 'r') as fp:
             yaml_docs = yaml.safe_load_all(fp)
             for yaml_doc in yaml_docs:
-                if yaml_doc["kind"] == osimage_api_kind and yaml_doc["spec"]["os"]["name"] in args.os_type:
+                # When multiple versions of same os is supported (eg: Ubuntu 22 and 24), matching just os_name can return false postive.
+                #Example: expected would be to match ubuntu-2204 but if first OSImage file returned is that of ubuntu 24, then it will match ubuntu-2404
+                # So matching with version from OSImage (ubuntu versions have a dot in between - 22.04) as well
+                if yaml_doc["kind"] == osimage_api_kind and yaml_doc["spec"]["os"]["name"] in args.os_type and yaml_doc["spec"]["os"]["version"].replace('.','') in args.os_type:
                     new_ova_name = "{}.ova".format(
                         yaml_doc["spec"]["image"]["ref"]["name"])
     if not new_ova_name:
-        print("New OVA name not found in metadata")
+        print("Matching OSImage Spec not found in metadata")
         exit(1)
 
     old_ova_name = ''
@@ -232,6 +239,13 @@ def copy_ova(args):
     old_path = os.path.join(default_ova_destination_folder, old_ova_name)
     print("Copying OVA from {} to {}".format(old_path, new_path))
     shutil.copyfile(old_path, new_path)
+
+    # Copy the package list
+    old_path = os.path.join(default_ova_destination_folder, "package_list.json")
+    new_path = os.path.join(args.ova_destination_folder, "package_list.json")
+    print("Copying package list file from {} to {}".format(old_path, new_path))
+    shutil.copyfile(old_path, new_path)
+        
     print("Copying completed")
 
 

@@ -33,13 +33,6 @@
     regexp: "^(?!.*pos=1)(photon_cmdline.*)"
     line: '\1 pos=1'
 
-- name: Disabling cgroups kernel memory accounting and disabling cgroups v2
-  lineinfile:
-    path: /boot/photon.cfg
-    backrefs: yes
-    regexp: "^(photon_cmdline.*)$"
-    line: '\1 cgroup.memory=nokmem systemd.legacy_systemd_cgroup_controller=yes'
-
 - name: Disable tdnf cache timer
   systemd:
     name: tdnf-cache-updateinfo.timer
@@ -50,3 +43,8 @@
   ansible.builtin.systemd:
     masked: true
     name: systemd-timesyncd.service
+
+- name: Disable OpenSSL FIPS module loading by default
+  ansible.builtin.file:
+    path: /etc/ssl/provider_fips.cnf
+    state: absent

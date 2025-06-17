@@ -42,6 +42,18 @@ service:
     {{$key}}: {{$val}}
   {{end}}
 {{end}}
+# Iterate through different OS versions
+{{$distro_version := .Vars.OS_VERSION}}
+{{range $component := index .Vars .Vars.OS .Vars.PROVIDER "os_version"}}
+{{if eq $distro_version (index $component "distro_version")}}
+  {{ range $name, $vers := index $component "service"}}
+  {{$name}}:
+  {{range $key, $val := $vers}}
+    {{$key}}: {{$val}}
+  {{end}}
+  {{end}}
+{{end}}
+{{end}}
 {{end}}
 
 {{ if eq .Vars.OS "windows"}} # Windows
@@ -67,6 +79,15 @@ command:
 {{ if eq .Vars.runtime "containerd"}}
   "Windows Service - containerd":
     exec: powershell -command "(Get-Service containerd | select *)"
+    exit-status: 0
+    stdout: 
+    - Automatic
+    - Running
+{{end}}
+
+{{ if eq .Vars.runtime "logredirector"}}
+  "Windows Service - logredirector":
+    exec: powershell -command "(Get-Service logredirector | select *)"
     exit-status: 0
     stdout: 
     - Automatic

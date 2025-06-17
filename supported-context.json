@@ -2,9 +2,10 @@
     "supported_os": [
         "photon-5",
         "ubuntu-2204-efi",
+        "ubuntu-2404-efi",
         "windows-2022-efi"
     ],
-    "artifacts_image": "projects.packages.broadcom.com/vsphere/iaas/kubernetes-release/1.32.0/vkr-artifact-server:v1.32.0_vmware.6-fips-vkr.2",
+    "artifacts_image": "projects.packages.broadcom.com/vsphere/iaas/kubernetes-release/1.33.1/vkr-artifact-server:v1.33.1_vmware.1-fips-vkr.2",
     "docker_build_args": {
         "IMAGE_BUILDER_COMMIT_ID": "826a2d7e05288b72870ae45797e9d64efc101d07"
     }

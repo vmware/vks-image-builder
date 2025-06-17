@@ -76,7 +76,7 @@ build-image-builder-container:
 endif
 
 define BUILD_NODE_IMAGE
-# To build vSphere Tanzu Kubernetes Grid compliant node images
+# To build vSphere Kubernetes Service compliant node images
 #
 # Arguments:
 #   OS_TARGET: [Required] Node Image OS target, to see list of supported OS target

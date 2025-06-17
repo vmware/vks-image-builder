@@ -12,6 +12,7 @@ command:
   crictl ps:
     exit-status: 0
     timeout: 0
+{{ if not .Vars.tkg.run_registry_as_service }}
   ctr -n k8s.io image ls 2>/dev/null | grep docker-registry | grep 'io.cri-containerd.pinned=pinned':
     exit-status: 0
     stderr: []
@@ -20,6 +21,7 @@ command:
     exit-status: 0
     stderr: []
     timeout: 10000 # in ms
+{{end}}
 {{if ne .Vars.containerd_wasm_shims_runtimes ""}}
   containerd-shim-lunatic-v1:
     exit-status: 1
@@ -105,8 +107,20 @@ command:
     stdout: ["always [madvise] never"]
     stderr: []
     timeout: 0
+  # Check that OpenSSL is not set to run in FIPS mode by default
+  openssl md5 /etc/os-release:
+    exit-status: 0
+    stderr: []
+    timeout: 0
 {{end}}
 {{range $name, $vers := index .Vars .Vars.OS .Vars.PROVIDER "command"}}
+  {{ $name }}:
+  {{range $key, $val := $vers}}
+    {{$key}}: {{$val}}
+  {{end}}
+{{end}}
+# TKG specific changes
+{{range $name, $vers := index .Vars.tkg .Vars.OS "command"}}
   {{ $name }}:
   {{range $key, $val := $vers}}
     {{$key}}: {{$val}}
@@ -189,11 +203,11 @@ command:
     exec: "\"/Program Files/containerd/containerd.exe\" config dump"
     exit-status: 0
     stdout:
-    - "sandbox_image = \"{{.Vars.pause_image}}\""
-    - "conf_dir = \"C:/etc/cni/net.d\""
-    - "bin_dir = \"C:/opt/cni/bin\""
-    - "root = \"C:\\\\ProgramData\\\\containerd\\\\root\""
-    - "state = \"C:\\\\ProgramData\\\\containerd\\\\state\""
+    - "sandbox = '{{.Vars.pause_image}}'"
+    - "conf_dir = 'C:/etc/cni/net.d'"
+    - "bin_dir = 'C:/opt/cni/bin'"
+    - "root = 'C:\\ProgramData\\containerd\\root'"
+    - "state = 'C:\\ProgramData\\containerd\\state'"
     timeout: 30000
   Check Windows Defender Exclusions are in place:
     exit-status: 0
@@ -205,7 +219,7 @@ command:
     exit-status: 0
     exec: powershell -command "(Get-ItemProperty 'HKLM:\SYSTEM\CurrentControlSet\Services\hns\State' -Name EnableCompartmentNamespace).EnableCompartmentNamespace -eq 1"
     stdout:
-    - True
+    - "True"
     timeout: 30000
   Windows Port Range is Expanded:
     exit-status: 0

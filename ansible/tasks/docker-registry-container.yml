@@ -1,0 +1,14 @@
+# Copyright 2025 VMware, Inc.
+# SPDX-License-Identifier: MPL-2.0
+---
+- name: Copy docker registry config yaml
+  template:
+    src: "etc/registry/config.yml"
+    dest: "{{ registry_config_path | trim }}"
+    mode: 0644
+
+- name: Copy docker-registry static pod config yaml
+  template:
+    src: "etc/kubernetes/manifests/registry.yml"
+    dest: "/etc/kubernetes/manifests/registry.yml"
+    mode: 0644

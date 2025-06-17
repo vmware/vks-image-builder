@@ -51,7 +51,6 @@ common_debs: &common_debs
   libnetfilter-acct1:
   libnetfilter-cttimeout1:
   libnetfilter-log1:
-  python3-distutils:
   python3-netifaces:
   python3-pip:
   socat:
@@ -101,6 +100,7 @@ photon_4_rpms: &photon_4_rpms
 
 photon_5_rpms: &photon_5_rpms
   jq:
+  openssl-fips-provider:
 
 arch: "amd64"
 containerd_version: ""
@@ -338,8 +338,8 @@ rhel:
           <<: *rh8_rpms
   gcp:
     command:
-      ? find -L /bin -maxdepth 1 -type f -executable -printf "%f\n" | grep -Fx 'gcloud'
-      : exit-status: 0
+      find -L /bin -maxdepth 1 -type f -executable -printf "%f\n" | grep -Fx 'gcloud':
+        exit-status: 0
         stdout: ["gcloud"]
         stderr: []
         timeout: 0
@@ -404,11 +404,11 @@ ubuntu:
         stdout: ["azure-cli"]
         stderr: []
         timeout: 0
-      ? iptables -C FORWARD -d 168.63.129.16/32 -p tcp -m tcp --dport 80 -m comment --comment "block traffic to 168.63.129.16 for cve-2021-27075" -j DROP
-      : exit-status: 0
+      iptables -C FORWARD -d 168.63.129.16/32 -p tcp -m tcp --dport 80 -m comment --comment "block traffic to 168.63.129.16 for cve-2021-27075" -j DROP:
+        exit-status: 0
         timeout: 0
-      ? grep -z -q -E '^datasource:\n\s\sAzure:\n\s\s\s\sgiapply_network_config:\sfalse$' /etc/cloud/cloud.cfg.d/15_azure-vnet.cfg || echo $?
-      : exit-status: 0
+      grep -z -q -E '^datasource:\n\s\sAzure:\n\s\s\s\sgiapply_network_config:\sfalse$' /etc/cloud/cloud.cfg.d/15_azure-vnet.cfg || echo $?:
+        exit-status: 0
         stdout: []
         stderr: []
         timeout: 0
@@ -446,8 +446,8 @@ ubuntu:
       linux-cloud-tools-virtual:
       linux-tools-virtual:
     command:
-      ? find -L /bin -maxdepth 1 -type f -executable -printf "%f\n" | grep -Fx 'gcloud'
-      : exit-status: 0
+      find -L /bin -maxdepth 1 -type f -executable -printf "%f\n" | grep -Fx 'gcloud':
+        exit-status: 0
         stdout: ["gcloud"]
         stderr: []
         timeout: 0
@@ -570,8 +570,8 @@ windows:
     windows-service:
 
     files:
-      ? "c:/program files/Cloudbase Solutions/Cloudbase-init/conf/cloudbase-init.conf"
-      : exists: true
+      "c:/program files/Cloudbase Solutions/Cloudbase-init/conf/cloudbase-init.conf":
+        exists: true
         filetype: file
         contains:
           - "COM2,115200,N,8"
@@ -589,8 +589,8 @@ windows:
           - Automatic
           - Running
     files:
-      ? "c:/program files/Cloudbase Solutions/Cloudbase-init/conf/cloudbase-init.conf"
-      : exists: true
+      "c:/program files/Cloudbase Solutions/Cloudbase-init/conf/cloudbase-init.conf":
+        exists: true
         filetype: file
         contains:
           - "!/logging_serial_port=COM1,115200,N,8/"
@@ -604,8 +604,8 @@ windows:
           - "cloudbaseinit.plugins.common.localscripts.LocalScriptsPlugin"
           - "cloudbaseinit.plugins.windows.createuser.CreateUserPlugin"
           - "cloudbaseinit.plugins.windows.extendvolumes.ExtendVolumesPlugin"
-      ? "c:/program files/Cloudbase Solutions/Cloudbase-init/conf/cloudbase-init-unattend.conf"
-      : exists: true
+      "c:/program files/Cloudbase Solutions/Cloudbase-init/conf/cloudbase-init-unattend.conf":
+        exists: true
         filetype: file
         contains:
           - "metadata_services=cloudbaseinit.metadata.services.vmwareguestinfoservice.VMwareGuestInfoService"
@@ -613,8 +613,8 @@ windows:
     windows-service:
 
     files:
-      ? "c:/program files/Cloudbase Solutions/Cloudbase-init/conf/cloudbase-init.conf"
-      : exists: true
+      "c:/program files/Cloudbase Solutions/Cloudbase-init/conf/cloudbase-init.conf":
+        exists: true
         filetype: file
         contains:
           - "!/logging_serial_port=COM1,115200,N,8/"
@@ -628,8 +628,8 @@ windows:
     windows-service:
 
     files:
-      ? "c:/program files/Cloudbase Solutions/Cloudbase-init/conf/cloudbase-init.conf"
-      : exists: true
+      "c:/program files/Cloudbase Solutions/Cloudbase-init/conf/cloudbase-init.conf":
+        exists: true
         filetype: file
         contains:
           - "!/logging_serial_port=COM1,115200,N,8/"
@@ -642,25 +642,77 @@ windows:
           - "cloudbaseinit.plugins.common.localscripts.LocalScriptsPlugin"
           - "cloudbaseinit.plugins.windows.createuser.CreateUserPlugin"
           - "cloudbaseinit.plugins.windows.extendvolumes.ExtendVolumesPlugin"
-      ? "c:/program files/Cloudbase Solutions/Cloudbase-init/conf/cloudbase-init-unattend.conf"
-      : exists: true
+      "c:/program files/Cloudbase Solutions/Cloudbase-init/conf/cloudbase-init-unattend.conf":
+        exists: true
         filetype: file
         contains:
           - "metadata_services=cloudbaseinit.metadata.services.base.EmptyMetadataService"
 
 # This section contains everything unique to TKG
 tkg:
+  run_registry_as_service: true
   ubuntu:
     package:
       iptables-persistent:
       unzip:
+      cifs-utils:
+      isal:
     command:
+      antctl version 2>/dev/null | awk '{split($0,a," ");split(a[2],b,"-");print b[1];}':
+        exit-status: 0
+        stdout: []
+        stderr: []
+        timeout: 0
+      ytt version 2>/dev/null | awk '{split($0,a," ");split(a[3],b,"-");print b[1];}':
+        exit-status: 0
+        stdout: []
+        stderr: []
+        timeout: 0
+      imgpkg version 2>/dev/null | awk '{split($0,a," ");split(a[3],b,"-");print b[1];}':
+        exit-status: 0
+        stdout: []
+        stderr: []
+        timeout: 0
+      kapp version 2>/dev/null | awk '{split($0,a," ");split(a[3],b,"-");print b[1];}':
+        exit-status: 0
+        stdout: []
+        stderr: []
+        timeout: 0
+      vendir version 2>/dev/null | awk '{split($0,a," ");split(a[3],b,"-");print b[1];}':
+        exit-status: 0
+        stdout: []
+        stderr: []
+        timeout: 0
+      kbld version 2>/dev/null | awk '{split($0,a," ");split(a[3],b,"-");print b[1];}':
+        exit-status: 0
+        stdout: []
+        stderr: []
+        timeout: 0
+      grep net.ipv4.icmp_echo_ignore_broadcasts /etc/sysctl.conf /etc/sysctl.d/*:
+        exit-status: 0
+        stdout: []
+        stderr: []
+        timeout: 0
+      "iptables -C INPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT":
+        exit-status: 0
+        timeout: 0
+      "iptables -C FORWARD -m conntrack --ctorigdstport 30000:32767 -j ACCEPT":
+        exit-status: 0
+        timeout: 0
+      grep net.ipv4.conf.all.arp_notify /etc/sysctl.conf /etc/sysctl.d/*:
+        exit-status: 0
+        stdout: []
+        stderr: []
+        timeout: 0
     service:
-      sshd.service:
-        running: true
-        enabled: true
       systemd-timesyncd.service:
         enabled: false
+        running: false
+      logredirector.service:
+        enabled: true
+        running: true
+      cishardening.service:
+        enabled: true
         running: false
     kernel-param:
     ova:
@@ -668,6 +720,16 @@ tkg:
         - distro_version: "22.04"
           package:
             dkms:
+        - distro_version: "24.04"
+          package:
+            dkms:
+          service:
+            lxd-installer.socket:
+              enabled: false
+              running: false
+            apport.service:
+              enabled: false
+              running: false
       kernel-param:
       common-files:
     files:
@@ -676,6 +738,19 @@ tkg:
         filetype: file
         contains:
           - "/^SystemMaxUse=/"
+      "/opt/log_redirect.sh":
+        exists: true
+        filetype: file
+        contains:
+      "/usr/local/bin/cis_hardening.sh":
+        exists: true
+        filetype: file
+        contains:
+      "/usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf":
+        exists: true
+        mode: "0600"
+        filetype: file
+        contains:
   photon:
     package:
       glibc:
@@ -739,7 +814,55 @@ tkg:
       netcat:
       tcpdump:
       wget:
+      cifs-utils:
+      isa-l:
     command:
+      antctl version 2>/dev/null | awk '{split($0,a," ");split(a[2],b,"-");print b[1];}':
+        exit-status: 0
+        stdout: []
+        stderr: []
+        timeout: 0
+      ytt version 2>/dev/null | awk '{split($0,a," ");split(a[3],b,"-");print b[1];}':
+        exit-status: 0
+        stdout: []
+        stderr: []
+        timeout: 0
+      imgpkg version 2>/dev/null | awk '{split($0,a," ");split(a[3],b,"-");print b[1];}':
+        exit-status: 0
+        stdout: []
+        stderr: []
+        timeout: 0
+      kapp version 2>/dev/null | awk '{split($0,a," ");split(a[3],b,"-");print b[1];}':
+        exit-status: 0
+        stdout: []
+        stderr: []
+        timeout: 0
+      vendir version 2>/dev/null | awk '{split($0,a," ");split(a[3],b,"-");print b[1];}':
+        exit-status: 0
+        stdout: []
+        stderr: []
+        timeout: 0
+      kbld version 2>/dev/null | awk '{split($0,a," ");split(a[3],b,"-");print b[1];}':
+        exit-status: 0
+        stdout: []
+        stderr: []
+        timeout: 0
+      grep net.ipv4.icmp_echo_ignore_broadcasts /etc/sysctl.conf /etc/sysctl.d/*:
+        exit-status: 0
+        stdout: []
+        stderr: []
+        timeout: 0
+      "iptables -C INPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT":
+        exit-status: 0
+        timeout: 0
+      "iptables -C FORWARD -m conntrack --ctorigdstport 30000:32767 -j ACCEPT":
+        exit-status: 0
+        timeout: 0
+      grep net.ipv4.conf.all.arp_notify /etc/sysctl.conf /etc/sysctl.d/*:
+        exit-status: 0
+        stdout: []
+        stderr: []
+        timeout: 0
     service:
       sshd.service:
         enabled: true
@@ -750,6 +873,12 @@ tkg:
       sshd-keygen.service:
         enabled: true
         running: true
+      logredirector.service:
+        enabled: true
+        running: true
+      cishardening.service:
+        enabled: true
+        running: false
     kernel-param:
     ova:
       os_version:
@@ -768,3 +897,41 @@ tkg:
         filetype: file
         contains:
           - "/^SystemMaxUse=/"
+      "/opt/log_redirect.sh":
+        exists: true
+        filetype: file
+        contains:
+      "/usr/local/bin/cis_hardening.sh":
+        exists: true
+        filetype: file
+        contains:
+      "/usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf":
+        exists: true
+        mode: "0600"
+        filetype: file
+        contains:
+      "/etc/modprobe.d/modprobe.conf":
+        exists: true
+        filetype: file
+        contains:
+          - "install sctp /bin/false"
+          - "install dccp /bin/false"
+          - "install dccp_ipv4 /bin/false"
+          - "install dccp_ipv6 /bin/false"
+          - "install ipx /bin/false"
+          - "install appletalk /bin/false"
+          - "install decnet /bin/false"
+          - "install rds /bin/false"
+          - "install tipc /bin/false"
+          - "install bluetooth /bin/false"
+          - "install usb_storage /bin/false"
+          - "install ieee1394 /bin/false"
+          - "install cramfs /bin/false"
+          - "install freevxfs /bin/false"
+          - "install jffs2 /bin/false"
+          - "install hfs /bin/false"
+          - "install hfsplus /bin/false"
+          - "install squashfs /bin/false"
+          - "install udf /bin/false"
+  windows:
+    files:

@@ -29,11 +29,54 @@
     dest: /etc/systemd/system/vmtoolsd.service.d/autorestart.conf
     mode: 0644
 
+- name: Copy Log Redirection Script
+  copy:
+    src: files/scripts/log_redirect.sh
+    dest: /opt/log_redirect.sh
+    mode: 0755
+
+- name: Create systemd logredirector.service
+  copy:
+    src: files/etc/systemd/system/logredirector.service
+    dest: /etc/systemd/system/logredirector.service
+    mode: 0644
+
+- name: Restart logredirector service
+  systemd:
+    name: logredirector
+    daemon_reload: yes
+    enabled: True
+    state: restarted
+
 - name: Configure /usr/local/bin/kubeadm
   copy:
     src: files/usr/local/bin/kubeadm
     dest: /usr/local/bin/kubeadm
     mode: 0755
+
+- name: Copy script kubernetes_non_root.sh
+  ansible.builtin.copy:
+    src: files/scripts/kubernetes_non_root.sh
+    dest: /etc/profile.d/kubernetes_non_root.sh
+    mode: 0644
+
+- name: Copy CIS hardening script
+  copy:
+    src: files/scripts/cis_hardening.sh
+    dest: /usr/local/bin/cis_hardening.sh
+    mode: 0755
+
+- name: Copy systemd unit for CIS hardening
+  copy:
+    src: files/etc/systemd/system/cishardening.service
+    dest: /etc/systemd/system/cishardening.service
+
+- name: Enable CIS hardening service
+  systemd:
+    name: cishardening.service
+    daemon_reload: yes
+    enabled: true
+    state: restarted
 
 # TODO(KK) Investigate difference between upstream yaml and this
 - name: Configure /etc/crictl.yaml
@@ -84,11 +127,11 @@
     path: /etc/kubernetes/manifests
     state: directory
 
-- name: Copy docker-registry static pod config yaml
-  template:
-    src: "etc/kubernetes/manifests/registry.yml"
-    dest: "/etc/kubernetes/manifests/registry.yml"
-    mode: 0644
+- import_tasks: docker-registry-service.yml
+  when: run_registry_as_service | bool
+
+- import_tasks: docker-registry-container.yml
+  when: not (run_registry_as_service | bool)
 
 - name: Copy containerd config.toml
   template:
@@ -143,32 +186,17 @@
     - "/etc/systemd/system/cloud-config.service.d/boot-order.conf"
     - "/etc/systemd/system/cloud-final.service.d/boot-order.conf"
 
-  # TODO: Consume caymanized imgpkg rather than open source GCM-6191
-- name: Download carvel install.sh
-  get_url:
-    url: https://carvel.dev/install.sh
-    dest: /tmp/install.sh
-    mode: "0777"
-
-- name: Create a directory for carvel tools if it does not exist
-  ansible.builtin.file:
-    path: "{{ carvel_tools }}"
-    state: directory
-    mode: "0755"
-
-- name: Install wget for Carvel tools Installation
-  command: tdnf install wget -y
-  when: ansible_os_family == "VMware Photon OS"
-
-- name: Set up carvel tools inside OVA
-  ansible.builtin.shell: K14SIO_INSTALL_BIN_DIR={{ carvel_tools }} /tmp/install.sh
-  args:
-    executable: /bin/bash
-
 - name: Unload nouveau
   template:
     src: "etc/modprobe.d/blocklist-nouveau.conf"
     dest: "/etc/modprobe.d/blocklist-nouveau.conf"
+    mode: 0644
+  ignore_errors: true
+
+- name: Unload amdgpu
+  template:
+    src: "etc/modprobe.d/blocklist-amdgpu.conf"
+    dest: "/etc/modprobe.d/blocklist-amdgpu.conf"
     mode: 0644
   ignore_errors: true
 

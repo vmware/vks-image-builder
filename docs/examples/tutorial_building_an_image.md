@@ -1,18 +1,18 @@
-# Tutorial for Using the vSphere Tanzu Kubernetes Grid Image Builder
+# Tutorial for Using the vSphere Kubernetes Service Image Builder
 
-This tutorial describes how to use the vSphere Tanzu Kubernetes Grid Image Builder to build a custom TKR for use on Supervisor in the vSphere.
+This tutorial describes how to use the vSphere Kubernetes Service Image Builder to build a custom VKr for use on Supervisor in the vSphere.
 
-The vSphere Tanzu Kubernetes Grid Image Builder uses Hashicorp Packer to generate images. Packer invokes vCenter APIs to create a VM from a TKR.
+The vSphere Kubernetes Service Image Builder uses Hashicorp Packer to generate images. Packer invokes vCenter APIs to create a VM from a VKr.
 
 ## Requirements
 
 - vCenter Server 8, which can be any vCenter 8 instance, it does not have to be the same vCenter managing your vSphere
 - Packer requires the vSphere environment to have DHCP configured; you cannot use static IP address management
-- Tutorial uses Ubuntu 22.04 based Linux VM to generate the image
+- Tutorial uses Ubuntu 24.04 based Linux VM to generate the image
 
 ## Clone the Repository
 
-Clone the vSphere Tanzu Kubernetes Grid Image Builder repository on the Linux VM where you are building the image.
+Clone the vSphere Kubernetes Service Image Builder repository on the Linux VM where you are building the image.
 
 ```bash
 git clone https://github.com/vmware-tanzu/vsphere-tanzu-kubernetes-grid-image-builder.git
@@ -20,7 +20,7 @@ git clone https://github.com/vmware-tanzu/vsphere-tanzu-kubernetes-grid-image-bu
 
 ## Install Docker
 
-The vSphere Tanzu Kubernetes Grid Image Builder runs components as Docker images to generate VMs.
+The vSphere Kubernetes Service Image Builder runs components as Docker images to generate VMs.
 
 Refer to the [Docker installation guide][docker-installation] for setting up Docker Engine.
 
@@ -128,7 +128,7 @@ NOTE: The HOST_IP must be reachable from the vCenter.
 Example:
 
 ```bash
-make build-node-image OS_TARGET=ubuntu-2204-efi TKR_SUFFIX=byoi HOST_IP=192.2.2.3 IMAGE_ARTIFACTS_PATH=/home/ubuntu/image ARTIFACTS_CONTAINER_PORT=8081
+make build-node-image OS_TARGET=ubuntu-2404-efi TKR_SUFFIX=byoi HOST_IP=192.2.2.3 IMAGE_ARTIFACTS_PATH=/home/ubuntu/image ARTIFACTS_CONTAINER_PORT=8081
 ```
 
 ## Verify the Custom Image
