@@ -654,7 +654,16 @@ tkg:
     package:
       iptables-persistent:
       unzip:
+      cifs-utils:
     command:
+      ? grep net.ipv4.icmp_echo_ignore_broadcasts /etc/sysctl.conf /etc/sysctl.d/*
+      : exit-status: 0
+        stdout: []
+        stderr: []
+        timeout: 0
+      "iptables -C INPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT":
+        exit-status: 0
+        timeout: 0
     service:
       sshd.service:
         running: true
@@ -739,7 +748,16 @@ tkg:
       netcat:
       tcpdump:
       wget:
+      cifs-utils:
     command:
+      ? grep net.ipv4.icmp_echo_ignore_broadcasts /etc/sysctl.conf /etc/sysctl.d/*
+      : exit-status: 0
+        stdout: []
+        stderr: []
+        timeout: 0
+      "iptables -C INPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT":
+        exit-status: 0
+        timeout: 0
     service:
       sshd.service:
         enabled: true
@@ -768,3 +786,5 @@ tkg:
         filetype: file
         contains:
           - "/^SystemMaxUse=/"
+  windows:
+    files:
