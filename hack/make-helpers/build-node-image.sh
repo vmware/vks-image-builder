@@ -17,6 +17,8 @@ is_argument_set "OS_TARGET argument is required" $OS_TARGET
 is_argument_set "HOST_IP argument is required" $HOST_IP
 is_argument_set "IMAGE_ARTIFACTS_PATH argument is required" $IMAGE_ARTIFACTS_PATH
 
+KUBERNETES_VERSION=$(cat supported-version.txt | xargs)
+
 if [ -z "$ARTIFACTS_CONTAINER_PORT" ]; then
     # Makefile creates this environment variables
     ARTIFACTS_CONTAINER_PORT=$DEFAULT_ARTIFACTS_CONTAINER_PORT
@@ -94,7 +96,7 @@ function build_node_image() {
         $(get_image_builder_container_image_name $KUBERNETES_VERSION)
 }
 
-supported_os_list=$(jq -r '."'$KUBERNETES_VERSION'".supported_os' $SUPPORTED_VERSIONS_JSON)
+supported_os_list=$(jq -r '.supported_os' $SUPPORTED_CONTEXT_JSON)
 if [ "$supported_os_list" == "null" ]; then
     print_error 'Use supported KUBERNETES_VERSION, run "make list-versions" to list the supported kubernetes versions'
     exit 1
@@ -109,9 +111,9 @@ while read SUPPORTED_OS_TARGET; do
 		next_hint_msg "Node Image OVA can be found at $IMAGE_ARTIFACTS_PATH/ovas/"
         supported_os=true
     fi
-done < <(jq -r '."'$KUBERNETES_VERSION'".supported_os[]' "$SUPPORTED_VERSIONS_JSON")
+done < <(jq -r '.supported_os[]' "$SUPPORTED_CONTEXT_JSON")
 
 if [ "$supported_os" == false ]; then
-	print_error 'Use supported OS_TARGET, run "make list-versions" to list the supported kubernetes versions'
+	print_error 'Use supported OS_TARGET, run "make list-supported-os" to list the supported kubernetes versions'
 	exit 1
 fi

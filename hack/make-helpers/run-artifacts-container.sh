@@ -15,9 +15,9 @@ if [ -z "$ARTIFACTS_CONTAINER_PORT" ]; then
     echo "Using default port for artifacts container $DEFAULT_ARTIFACTS_CONTAINER_PORT"
 fi
 
-artifacts_container_image_url=$(jq -r '."'$KUBERNETES_VERSION'".artifacts_image' $SUPPORTED_VERSIONS_JSON)
+artifacts_container_image_url=$(jq -r '.artifacts_image' $SUPPORTED_CONTEXT_JSON)
 if [ "$artifacts_container_image_url" == "null" ]; then
-    print_error 'Use Supported kubernetes version, to list supported kubernetes versions run "make list-versions"'
+    print_error 'Missing artifact server container image url'
     exit 1
 fi
 
