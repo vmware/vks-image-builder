@@ -44,3 +44,8 @@
     name: tdnf-cache-updateinfo.timer
     enabled: no
     state: stopped
+
+- name: Mask systemd-timesyncd unit
+  ansible.builtin.systemd:
+    masked: true
+    name: systemd-timesyncd.service

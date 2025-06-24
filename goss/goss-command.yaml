@@ -1,4 +1,5 @@
-# Copyright 2023 VMware, Inc.
+# © Broadcom. All Rights Reserved.
+# The term “Broadcom” refers to Broadcom Inc. and/or its subsidiaries.
 # SPDX-License-Identifier: MPL-2.0
 
 command:
@@ -10,9 +11,15 @@ command:
     timeout: 0
   crictl ps:
     exit-status: 0
-    stdout: []
-    stderr: []
     timeout: 0
+  ctr -n k8s.io image ls 2>/dev/null | grep docker-registry | grep 'io.cri-containerd.pinned=pinned':
+    exit-status: 0
+    stderr: []
+    timeout: 10000 # in ms
+  ctr -n k8s.io image ls 2>/dev/null | grep pause | grep 'io.cri-containerd.pinned=pinned':
+    exit-status: 0
+    stderr: []
+    timeout: 10000 # in ms
 {{if ne .Vars.containerd_wasm_shims_runtimes ""}}
   containerd-shim-lunatic-v1:
     exit-status: 1
