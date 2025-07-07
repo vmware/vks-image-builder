@@ -1,0 +1,130 @@
+---
+- name: Gather generic information
+  block:
+    # Gather list of installed packages
+    - name: Gather the package facts
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Copy installed package details to local file
+      ansible.builtin.copy:
+        content: "{{ ansible_facts.packages | to_nice_json }}"
+        dest: "{{ output_dir }}/package_list.json"
+      delegate_to: localhost
+
+    - name: Gather kernel configuration
+      ansible.builtin.shell: cat /lib/modules/$(uname -r)/build/.config
+      register: kernel_config
+      changed_when: kernel_config.rc != 0
+
+    - name: Copy kernel configuration details to local file
+      ansible.builtin.copy:
+        content: "{{ kernel_config.stdout }}"
+        dest: "{{ output_dir }}/kernel.config"
+      delegate_to: localhost
+
+    - name: Gather key OS details
+      ansible.builtin.copy:
+        content: "{{ details | to_json }}"
+        dest: "{{ output_dir }}/os_manifest.json"
+      delegate_to: localhost
+      vars:
+        details:
+          kernel_version: "{{ ansible_kernel }}"
+          os:
+            name: "{{ ansible_distribution }}"
+            version: "{{ ansible_distribution_version }}"
+            family: "{{ ansible_os_family }}"
+            description: "{{ ansible_lsb['description'] }}"
+            pkg_mgr: "{{ ansible_pkg_mgr }}"
+          boot_parameters: "{{ ansible_cmdline }}"
+          python_version: "{{ ansible_python_version }}"
+          selinux: "{{ ansible_selinux }}"
+
+- name: Gather the Kernel tunables
+  vars:
+    source_paths:
+      - /etc/sysctl.conf
+      - /etc/sysctl.d
+  block:
+    - name: List Kernel tunables configs
+      ansible.builtin.find:
+        depth: 1
+        paths: "{{ source_paths }}"
+        patterns:
+          - "*.conf"
+        file_type: file
+      register: kernel_tunables
+
+    - name: Copy all the kernel tunables
+      ansible.builtin.fetch:
+        src: "{{ item.path }}"
+        dest: "{{ output_dir }}/{{ item.path }}"
+        flat: true
+      loop: "{{ kernel_tunables.files }}"
+
+    - name: Compress the repo sources
+      community.general.archive:
+        path: "{{ output_dir }}/etc"
+        dest: "{{ output_dir }}/kernel_tunables.tgz"
+        remove: true
+      delegate_to: localhost
+
+- name: Bundle Repository Sources - Ubuntu/Debian
+  when: ansible_os_family == "Debian"
+  vars:
+    source_dirs:
+      - /etc/apt
+      - /etc/apt/sources.list.d
+  block:
+    - name: Find source list repo files
+      ansible.builtin.find:
+        depth: 1
+        paths: "{{ source_dirs }}"
+        patterns:
+          - "*.list"
+          - "*.sources"
+        file_type: file
+      register: repo_files
+
+    - name: Copy all the repo sources
+      ansible.builtin.fetch:
+        src: "{{ item.path }}"
+        dest: "{{ output_dir }}/{{ item.path }}"
+        flat: true
+      loop: "{{ repo_files.files }}"
+
+    - name: Compress the repo sources
+      community.general.archive:
+        path: "{{ output_dir }}/etc"
+        dest: "{{ output_dir }}/repo_sources.tgz"
+        remove: true
+      delegate_to: localhost
+
+- name: Bundle Repository Sources - Photon
+  when: ansible_os_family == "VMware Photon OS"
+  vars:
+    source_dirs:
+      - /etc/yum.repos.d
+  block:
+    - name: Find source list repo files
+      ansible.builtin.find:
+        depth: 1
+        paths: "{{ source_dirs }}"
+        patterns: "*.repo"
+        file_type: file
+      register: repo_files
+
+    - name: Copy all the repo sources
+      ansible.builtin.fetch:
+        src: "{{ item.path }}"
+        dest: "{{ output_dir }}/{{ item.path }}"
+        flat: true
+      loop: "{{ repo_files.files }}"
+
+    - name: Compress the repo sources
+      community.general.archive:
+        path: "{{ output_dir }}/etc"
+        dest: "{{ output_dir }}/repo_sources.tgz"
+        remove: true
+      delegate_to: localhost
