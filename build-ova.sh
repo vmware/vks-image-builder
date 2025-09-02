@@ -43,6 +43,43 @@ function download_configuration_files() {
     wget -q http://${HOST_IP}:${ARTIFACTS_CONTAINER_PORT}/artifacts/metadata/vmware-system.kr.override-semver-constraint.json || echo "override-semver-constraint.json don't exist"
 }
 
+# Modify user data to pin kernel to given version for Ubuntu OS
+function modify_user_data() {
+    local os_folder_name=""
+    if [[ "${OS_TARGET}" == "ubuntu-2204-efi" ]]; then
+       os_folder_name="22.04.efi"
+    else 
+       return 0 # OS_TARGET is other than ubuntu22. Skipping the userdata modification.
+    fi
+    if [[ -z "${PRIMARY_INTERNAL_REPO_URL}" && -z "${SECURITY_INTERNAL_REPO_URL}" && -z "${UPDATE_INTERNAL_REPO_URL}" ]]; then
+           echo "Warning: Internal Repositories are not set. Using default Ubuntu apt repository."
+           return 0
+    fi
+    local user_data_file="/image-builder/images/capi/packer/ova/linux/ubuntu/http/${os_folder_name}/user-data.tmpl"
+    if [[ ! -f "${user_data_file}" ]]; then exit 1; fi
+
+    # Use heredoc to define the multi-line string
+    local apt_section_yaml=$(cat <<EOF
+  apt:
+      preserve_sources_list: false
+      fallback: offline-install
+      primary:
+        - arches: [ amd64 ]
+          uri: ${PRIMARY_INTERNAL_REPO_URL}
+      security:
+        - arches: [ amd64 ]
+          uri: ${SECURITY_INTERNAL_REPO_URL} 
+      updates:
+        - arches: [ amd64 ]
+          uri: ${UPDATE_INTERNAL_REPO_URL} 
+EOF
+)
+    sed -i "/^autoinstall:/r /dev/stdin" "${user_data_file}" <<< "${apt_section_yaml}"
+    echo "INFO: User-data template modified successfully. Final Content:"
+    cat "${user_data_file}"
+    return 0
+}
+
 # Generate packaer input variables based on packer-variables folder
 function generate_packager_configuration() {
     mkdir -p $ova_destination_folder
@@ -161,6 +198,7 @@ function main() {
     download_configuration_files
     download_ovftool
     generate_packager_configuration
+    modify_user_data
     generate_custom_ovf_properties
     download_stig_files
     apply_ib_patches
