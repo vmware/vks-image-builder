@@ -1,8 +1,7 @@
 {
     "supported_os": [
         "photon-5",
-        "ubuntu-2204-efi",
-        "windows-2022-efi"
+        "ubuntu-2204-efi"
     ],
     "artifacts_image": "projects.packages.broadcom.com/vsphere/iaas/kubernetes-release/1.30.11/tkg-vsphere-linux-resource-bundle:v1.30.11_vmware.1-fips-vkr.2",
     "docker_build_args": {
