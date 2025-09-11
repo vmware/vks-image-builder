@@ -128,9 +128,9 @@
                 <vmw:Config ovf:required="false" vmw:key="backing.exclusive" vmw:value="false"/>
                 <vmw:Config ovf:required="false" vmw:key="connectable.allowGuestControl" vmw:value="false"/>
             </Item>
-            <vmw:Config ovf:required="false" vmw:key="cpuHotAddEnabled" vmw:value="false"/>
+            <vmw:Config ovf:required="false" vmw:key="cpuHotAddEnabled" vmw:value="true"/>
             <vmw:Config ovf:required="false" vmw:key="cpuHotRemoveEnabled" vmw:value="false"/>
-            <vmw:Config ovf:required="false" vmw:key="memoryHotAddEnabled" vmw:value="false"/>
+            <vmw:Config ovf:required="false" vmw:key="memoryHotAddEnabled" vmw:value="true"/>
             <vmw:Config ovf:required="false" vmw:key="firmware" vmw:value="${FIRMWARE}"/>
             <vmw:Config ovf:required="false" vmw:key="tools.syncTimeWithHost" vmw:value="false"/>
             <vmw:Config ovf:required="false" vmw:key="tools.afterPowerOn" vmw:value="true"/>
