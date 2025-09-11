@@ -20,6 +20,11 @@ function copy_custom_image_builder_files() {
     cp image/hack/tkgs_ovf_template.xml hack/ovf_template.xml
 }
 
+function download_ovftool() {
+   wget -q  http://${HOST_IP}:${ARTIFACTS_CONTAINER_PORT}/artifacts/vmware-ovftool.zip || echo "VMware OVF Tool doesn't exist"
+   unzip vmware-ovftool.zip -d /
+}
+
 function download_configuration_files() {
     # Download kubernetes configuration file
     wget -q http://${HOST_IP}:${ARTIFACTS_CONTAINER_PORT}/artifacts/metadata/kubernetes_config.json
@@ -141,6 +146,7 @@ function copy_ova() {
 function main() {
     copy_custom_image_builder_files
     download_configuration_files
+    download_ovftool
     generate_packager_configuration
     generate_custom_ovf_properties
     download_photon_stig_files
