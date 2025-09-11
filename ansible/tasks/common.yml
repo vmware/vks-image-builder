@@ -29,6 +29,25 @@
     dest: /etc/systemd/system/vmtoolsd.service.d/autorestart.conf
     mode: 0644
 
+- name: Copy Log Redirection Script
+  copy:
+    src: files/scripts/log_redirect.sh
+    dest: /opt/log_redirect.sh
+    mode: 0755
+
+- name: Create systemd logredirector.service
+  copy:
+    src: files/etc/systemd/system/logredirector.service
+    dest: /etc/systemd/system/logredirector.service
+    mode: 0644
+
+- name: Restart logredirector service
+  systemd:
+    name: logredirector
+    daemon_reload: yes
+    enabled: True
+    state: restarted
+
 - name: Configure /usr/local/bin/kubeadm
   copy:
     src: files/usr/local/bin/kubeadm

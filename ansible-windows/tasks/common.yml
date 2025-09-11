@@ -1,5 +1,27 @@
-# Copyright 2024 VMware, Inc.
+# Copyright 2024-25 Broadcom, Inc.
 # SPDX-License-Identifier: MPL-2.0
 
 - name: Copy goss binary
   win_shell: cp "{{ additional_executables_destination_path }}\\goss.exe" "{{ goss_download_path }}"
+
+- name: Ensure log redirect directory
+  ansible.windows.win_file:
+    path: "{{ log_redirect_script_directory }}"
+    state: directory
+
+- name: Copy log redirection script
+  ansible.windows.win_copy:
+    src: scripts/log-redirect.ps1
+    dest: "{{ log_redirect_script_directory }}\\log-redirect.ps1"
+
+- name: Install log redirection service
+  community.windows.win_nssm:
+    name: logredirector
+    application: "%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"
+    arguments: "-ExecutionPolicy Bypass -NoProfile -File {{ log_redirect_script_directory }}\\log-redirect.ps1"
+    app_exit:
+      Default: Exit
+    dependencies:
+      - VMTools
+    start_mode: auto
+    state: started

@@ -73,4 +73,13 @@ command:
     - Running
 {{end}}
 
+{{ if eq .Vars.runtime "logredirector"}}
+  "Windows Service - logredirector":
+    exec: powershell -command "(Get-Service logredirector | select *)"
+    exit-status: 0
+    stdout: 
+    - Automatic
+    - Running
+{{end}}
+
 {{end}}
