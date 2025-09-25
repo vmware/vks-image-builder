@@ -1,7 +1,8 @@
-# Copyright 2024 VMware, Inc.
+# Copyright 2024-25 Broadcom, Inc.
 # SPDX-License-Identifier: MPL-2.0
 ---
 registry_install_path: "C:/registry"
 registry_root_directory: "C:/storage/container-registry"
 registry_log_directory: "C:/var/log/registry"
 goss_download_path: "C:\\tmp"
+log_redirect_script_directory: "C:\\logredirect"
