@@ -54,6 +54,52 @@ You may customize the Windows Node Image with a [Windows setup answer file][wind
 
 The upstream Windows setup answer file can be found at [Image Builder][ib-windows-unattended-xml].
 
+The following snippet shows how to download the answer file.
+
+```bash
+curl https://raw.githubusercontent.com/kubernetes-sigs/image-builder/refs/heads/main/images/capi/packer/ova/windows/windows-2022-efi/autounattend.xml -o /home/image-builder/windows_autounattend.xml
+```
+
+The following snippet shows how to update the administrative user account.
+
+```bash
+vi /home/image-builder/windows_autounattend.xml
+```
+
+Locate the `AdministratorPassword` under `UserAccounts` section and update the administrator password to comform to organizational policies.
+
+```xml
+<UserAccounts>
+  <AdministratorPassword>
+      <Value>MyAdminPassw0rd</Value>
+      <PlainText>true</PlainText>
+  </AdministratorPassword>
+  <LocalAccounts>
+      <LocalAccount wcm:action="add">
+          <Description>Administrator</Description>
+          <DisplayName>Administrator</DisplayName>
+          <Group>Administrators</Group>
+          <Name>Administrator</Name>
+      </LocalAccount>
+  </LocalAccounts>
+</UserAccounts>
+```
+
+Similarly, locate `Password` under `AutoLogon` section and update the administrator password to conform to organizational policies.
+
+```xml
+<AutoLogon>
+  <Password>
+      <Value>MyAdminPassw0rd</Value>
+      <PlainText>true</PlainText>
+  </Password>
+  <Enabled>true</Enabled>
+  <Username>Administrator</Username>
+</AutoLogon>
+```
+
+_**Note**_: The `AdministratorPassword` under `UserAccounts` section and `Password` under `AutoLogon` section should match.
+
 ### Provision Administrative Account for Log Collection
 
 In order for the Windows nodes to work with the [vSphere Kubernetes Service support bundle tool][gather-logs], you need to add an administrative account in the answer file.
@@ -61,7 +107,6 @@ In order for the Windows nodes to work with the [vSphere Kubernetes Service supp
 The following snippet shows how to add an administrative account in the answer file.
 
 ```bash
-curl https://raw.githubusercontent.com/kubernetes-sigs/image-builder/refs/heads/main/images/capi/packer/ova/windows/windows-2022-efi/autounattend.xml -o /home/image-builder/windows_autounattend.xml
 vi /home/image-builder/windows_autounattend.xml
 ```
 

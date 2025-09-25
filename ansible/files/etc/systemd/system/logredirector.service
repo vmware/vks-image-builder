@@ -1,0 +1,16 @@
+[Unit]
+Description=Log Redirection Service
+After=vmtoolsd.service
+Wants=vmtoolsd.service
+
+[Service]
+Type=simple
+ExecStart=/bin/bash /opt/log_redirect.sh
+RemainAfterExit=yes
+Restart=on-failure
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

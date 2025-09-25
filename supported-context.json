@@ -4,7 +4,7 @@
         "ubuntu-2204-efi",
         "windows-2022-efi"
     ],
-    "artifacts_image": "projects.packages.broadcom.com/vsphere/iaas/kubernetes-release/1.32.3/vkr-artifact-server:v1.32.3_vmware.1-fips-vkr.2",
+    "artifacts_image": "projects.packages.broadcom.com/vsphere/iaas/kubernetes-release/1.32.7/vkr-artifact-server:v1.32.7_vmware.3-fips-vkr.1",
     "docker_build_args": {
         "IMAGE_BUILDER_COMMIT_ID": "826a2d7e05288b72870ae45797e9d64efc101d07"
     }
