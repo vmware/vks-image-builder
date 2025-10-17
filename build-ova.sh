@@ -22,7 +22,7 @@ function copy_custom_image_builder_files() {
 }
 
 function download_ovftool() {
-   wget -q  http://${HOST_IP}:${ARTIFACTS_CONTAINER_PORT}/artifacts/vmware-ovftool.zip || echo "VMware OVF Tool doesn't exist"
+	wget -q  http://${HOST_IP}:${ARTIFACTS_CONTAINER_PORT}/artifacts/vmware-ovftool.zip || (echo "VMware OVF Tool doesn't exist" && exit 1)
    unzip vmware-ovftool.zip -d /
 }
 
