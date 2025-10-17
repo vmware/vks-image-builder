@@ -657,6 +657,7 @@ tkg:
       unzip:
       cifs-utils:
       isal:
+      tuned:
     command:
       antctl version 2>/dev/null | awk '{split($0,a," ");split(a[2],b,"-");print b[1];}':
         exit-status: 0
@@ -714,6 +715,8 @@ tkg:
       cishardening.service:
         enabled: true
         running: false
+      tuned.service:
+        enabled: true
     kernel-param:
     ova:
       os_version:
@@ -846,6 +849,7 @@ tkg:
       wget:
       cifs-utils:
       isa-l:
+      tuned:
     command:
       antctl version 2>/dev/null | awk '{split($0,a," ");split(a[2],b,"-");print b[1];}':
         exit-status: 0
@@ -909,6 +913,8 @@ tkg:
       cishardening.service:
         enabled: true
         running: false
+      tuned.service:
+        enabled: true
     kernel-param:
     ova:
       os_version:
