@@ -758,6 +758,14 @@ tkg:
         mode: "0600"
         filetype: file
         contains:
+      "/usr/bin/grub2-editenv":
+        exists: true
+        filetype: symlink
+        contains:
+      "/etc/grub2.cfg":
+        exists: true
+        filetype: symlink
+        contains:
     stig:
       package:
         aide:
