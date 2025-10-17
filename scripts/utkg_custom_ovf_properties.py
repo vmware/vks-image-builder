@@ -75,6 +75,11 @@ def downloadUtkgAddonFiles():
     addon_packages = fetch_addon_packages()
     return addon_packages
 
+# str_presenter helps you to format string
+def str_presenter(dumper, data):
+    if len(data.splitlines()) > 1:
+        return dumper.represent_scalar('tag:yaml.org,2002:str', data, style='|')
+    return dumper.represent_scalar('tag:yaml.org,2002:str', data)
 
 def convert_to_xml(data):
     t = Text()
@@ -110,8 +115,9 @@ def create_non_addon_VKr_constraints_ovf_properties():
     try:
         with open(static_resources_file, 'r') as file:
             tkr_version, _ = fetch_tkr_data()
+            yaml.add_representer(str,str_presenter)
             documents = list(yaml.safe_load_all(file))
-            data = yaml.dump_all(documents,sort_keys=False)
+            data = yaml.dump_all(documents,sort_keys=False,default_flow_style=False)
             inner_data = set_inner_data(data, "staticresources", tkr_version)
             key = Path(static_resources_file).stem
             custom_ovf_properties[key] = inner_data
