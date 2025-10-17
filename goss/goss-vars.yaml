@@ -927,6 +927,9 @@ tkg:
           package:
             dkms:
       kernel-param:
+    stig:
+      package:
+      files:
     files:
       "/etc/systemd/journald.conf":
         exists: true
