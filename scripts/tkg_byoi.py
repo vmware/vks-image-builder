@@ -146,10 +146,6 @@ def populate_jinja_args(args):
 
     jinja_args_map['registry_store_path'] = get_registry_store_path(args)
 
-    # TODO: change the versions to enable this feature
-    run_registry_as_service = semver.Version(k8sversion.major, k8sversion.minor, k8sversion.patch).compare("1.31.0") >= 0
-    jinja_args_map["run_registry_as_service"] = run_registry_as_service
-
     print("Jinja Args:", jinja_args_map)
 
 

@@ -12,16 +12,6 @@ command:
   crictl ps:
     exit-status: 0
     timeout: 0
-{{ if not .Vars.tkg.run_registry_as_service }}
-  ctr -n k8s.io image ls 2>/dev/null | grep docker-registry | grep 'io.cri-containerd.pinned=pinned':
-    exit-status: 0
-    stderr: []
-    timeout: 10000 # in ms
-  ctr -n k8s.io image ls 2>/dev/null | grep pause | grep 'io.cri-containerd.pinned=pinned':
-    exit-status: 0
-    stderr: []
-    timeout: 10000 # in ms
-{{end}}
 {{if ne .Vars.containerd_wasm_shims_runtimes ""}}
   containerd-shim-lunatic-v1:
     exit-status: 1

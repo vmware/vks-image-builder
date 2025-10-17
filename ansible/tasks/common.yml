@@ -128,10 +128,6 @@
     state: directory
 
 - import_tasks: docker-registry-service.yml
-  when: run_registry_as_service | bool
-
-- import_tasks: docker-registry-container.yml
-  when: not (run_registry_as_service | bool)
 
 - name: Copy containerd config.toml
   template:
