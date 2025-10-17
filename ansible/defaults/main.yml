@@ -28,3 +28,11 @@ enable_garp_notify_all: true
 usb_storage: |
   install usb-storage /bin/false
   blacklist usb-storage
+ubuntu_stig_debs:
+  - aide
+  - aide-common
+  - audispd-plugins
+  - vlock
+  - libpam-pwquality
+  - libpam-sss
+  - libnss-sss

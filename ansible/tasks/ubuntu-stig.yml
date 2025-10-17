@@ -1,13 +1,6 @@
 - name: "Install Packages - STIG Support"
   ansible.builtin.apt:
-    name:
-      - aide
-      - aide-common
-      - audispd-plugins
-      - vlock
-      - libpam-pwquality
-      - libpam-sss
-      - libnss-sss
+    name: "{{ ubuntu_stig_debs }}"
     state: present
 
 - name: "Block usb-storage"
