@@ -455,10 +455,10 @@ def render_additional_packer_variables(additional_packer_variables, os_type):
                     output.update(json.load(fp))
     
     os_type_parts = os_type.split('-')
-    if len(os_type_parts) > 0 and os_type_parts[0].lower() == 'windows':
+    if len(os_type_parts) > 0 and os_type_parts[0].lower() == 'windows' and output.get("windows_admin_password") is None:
         windows_admin_password = os.environ.get("WINDOWS_ADMIN_PASSWORD")
         if windows_admin_password is None:
-            print("Missing environment variable definition '{}' for OS type '{}'".format("WINDOWS_ADMIN_PASSWORD", os_type))
+            print("Either set `{}' in packer variables or set '{}' environment variable for OS type '{}'.` ".format("windows_admin_password", "WINDOWS_ADMIN_PASSWORD", os_type))
             exit(1)
         output["windows_admin_password"] = windows_admin_password
     print("Additional Packer Variables: ", json.dumps(output, indent=4))
