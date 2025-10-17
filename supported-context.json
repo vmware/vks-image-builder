@@ -7,6 +7,6 @@
     ],
     "artifacts_image": "projects.packages.broadcom.com/vsphere/iaas/kubernetes-release/1.33.1/vkr-artifact-server:v1.33.1_vmware.1-fips-vkr.2",
     "docker_build_args": {
-        "IMAGE_BUILDER_COMMIT_ID": "74dbedad3dc56a37b8ea51d280c38f885d60c4e4"
+        "IMAGE_BUILDER_COMMIT_ID": "b08cf47eae72b2331c047e5ab330b054002e486b"
     }
 }
