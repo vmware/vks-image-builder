@@ -21,11 +21,6 @@ function copy_custom_image_builder_files() {
     cp image/hack/tkgs_ovf_template.xml hack/ovf_template.xml
 }
 
-function download_ovftool() {
-   wget -q  http://${HOST_IP}:${ARTIFACTS_CONTAINER_PORT}/artifacts/vmware-ovftool.zip || echo "VMware OVF Tool doesn't exist"
-   unzip vmware-ovftool.zip -d /
-}
-
 function download_configuration_files() {
     # Download kubernetes configuration file
     wget -q http://${HOST_IP}:${ARTIFACTS_CONTAINER_PORT}/artifacts/metadata/kubernetes_config.json
@@ -138,7 +133,7 @@ function trigger_image_builder() {
     ON_ERROR_ASK=1 PATH=$PATH:/home/imgbuilder-ova/.local/bin PACKER_CACHE_DIR=/image-builder/packer_cache \
     PACKER_VAR_FILES="${image_builder_root}/packer-variables.json"  \
     OVF_CUSTOM_PROPERTIES=${custom_ovf_properties_file} \
-    PACKER_NO_COLOR=1 IB_OVFTOOL=1 ANSIBLE_TIMEOUT=180 IB_OVFTOOL_ARGS="--allowExtraConfig" \
+    PACKER_NO_COLOR=1 ANSIBLE_TIMEOUT=180  \
     make build-node-ova-vsphere-${OS_TARGET}
 }
 
@@ -159,7 +154,6 @@ function copy_ova() {
 function main() {
     copy_custom_image_builder_files
     download_configuration_files
-    download_ovftool
     generate_packager_configuration
     generate_custom_ovf_properties
     download_stig_files
