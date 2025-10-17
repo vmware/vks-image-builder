@@ -101,7 +101,7 @@ photon_4_rpms: &photon_4_rpms
 photon_5_rpms: &photon_5_rpms
   jq:
   openssl-fips-provider:
-
+  nftables:
 arch: "amd64"
 containerd_version: ""
 containerd_wasm_shims_runtimes: ""
@@ -897,6 +897,8 @@ tkg:
         stdout: []
         stderr: []
         timeout: 0
+      "nft --version":
+        exit-status: 0
     service:
       sshd.service:
         enabled: true
