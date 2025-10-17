@@ -126,7 +126,7 @@ function trigger_image_builder() {
     ON_ERROR_ASK=1 PATH=$PATH:/home/imgbuilder-ova/.local/bin PACKER_CACHE_DIR=/image-builder/packer_cache \
     PACKER_VAR_FILES="${image_builder_root}/packer-variables.json"  \
     OVF_CUSTOM_PROPERTIES=${custom_ovf_properties_file} \
-    IB_OVFTOOL=1 ANSIBLE_TIMEOUT=180 IB_OVFTOOL_ARGS="--allowExtraConfig" \
+    PACKER_NO_COLOR=1 IB_OVFTOOL=1 ANSIBLE_TIMEOUT=180 IB_OVFTOOL_ARGS="--allowExtraConfig" \
     make build-node-ova-vsphere-${OS_TARGET}
 }
 
