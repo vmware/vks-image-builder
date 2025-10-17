@@ -106,7 +106,7 @@ def create_non_addon_VKr_constraints_ovf_properties():
         except IOError:
             print("couldn't find/read file: ",file)
     #  special case to add static resources to ovf properties
-    static_resources_file = join(tkg_core_directory,"static-resources","vmware-system.guest.kubernetes.addons.staticresources.yaml")
+    static_resources_file = join(tkg_core_directory,"static-resources","vmware-system.kr.addon.staticresources.yaml")
     try:
         with open(static_resources_file, 'r') as file:
             tkr_version, _ = fetch_tkr_data()
