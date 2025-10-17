@@ -658,6 +658,7 @@ tkg:
       cifs-utils:
       isal:
       tuned:
+      nftables:
     command:
       antctl version 2>/dev/null | awk '{split($0,a," ");split(a[2],b,"-");print b[1];}':
         exit-status: 0
@@ -705,6 +706,8 @@ tkg:
         stdout: []
         stderr: []
         timeout: 0
+      "nft --version":
+        exit-status: 0
     service:
       systemd-timesyncd.service:
         enabled: false
