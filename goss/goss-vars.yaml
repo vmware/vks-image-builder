@@ -929,6 +929,7 @@ tkg:
       kernel-param:
     stig:
       package:
+        grub2:
       files:
     files:
       "/etc/systemd/journald.conf":

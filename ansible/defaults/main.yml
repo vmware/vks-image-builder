@@ -36,3 +36,5 @@ ubuntu_stig_debs:
   - libpam-pwquality
   - libpam-sss
   - libnss-sss
+photon_stig_rpms:
+  - grub2
