@@ -48,3 +48,8 @@
   ansible.builtin.file:
     path: /etc/ssl/provider_fips.cnf
     state: absent
+
+- name: Fix motd permission issue
+  ansible.builtin.lineinfile:
+    path: /etc/pam.d/motdgen
+    line: " session     required      pam_exec.so /usr/bin/chmod a+r /var/run/motdgen/motd"
