@@ -33,12 +33,6 @@
     regexp: "^(?!.*pos=1)(photon_cmdline.*)"
     line: '\1 pos=1'
 
-- name: Disable tdnf cache timer
-  systemd:
-    name: tdnf-cache-updateinfo.timer
-    enabled: no
-    state: stopped
-
 - name: Mask systemd-timesyncd unit
   ansible.builtin.systemd:
     masked: true
