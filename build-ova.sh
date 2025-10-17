@@ -82,6 +82,18 @@ function generate_custom_ovf_properties() {
     --outfile ${custom_ovf_properties_file}
 }
 
+function apply_ib_patches() {
+    patch_dir="${image_builder_root}/patches"
+    if [ -d "${patch_dir}" ] && [ -n "$(ls -A ${patch_dir})" ]; then
+        echo "Applying patches on upstream Image Builder changes"
+        cp ${patch_dir}/*.patch ./
+        git apply *.patch
+        rm *.patch
+    else
+        echo "No patches needs to get applied since '${patch_dir}' does not exist or is empty" 
+    fi
+}
+
 
 function download_stig_files() {
     if [[ "$OS_TARGET" != "photon-3" && "$OS_TARGET" != "photon-5" ]]; then
@@ -151,6 +163,7 @@ function main() {
     generate_packager_configuration
     generate_custom_ovf_properties
     download_stig_files
+    apply_ib_patches
     packer_logging
     trigger_image_builder
     copy_ova

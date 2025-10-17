@@ -55,6 +55,7 @@ RUN make deps-ova
 RUN command -v packer
 RUN command -v ansible
 
+COPY patches patches
 # Copy the image build script
 COPY build-ova.sh .
 RUN chmod +x build-ova.sh
