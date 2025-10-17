@@ -929,6 +929,9 @@ tkg:
         running: false
       tuned.service:
         enabled: true
+      tdnf-cache-updateinfo.timer:
+        enabled: false
+        running: false
     kernel-param:
     ova:
       os_version:
