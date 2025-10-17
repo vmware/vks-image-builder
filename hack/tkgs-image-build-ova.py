@@ -27,7 +27,7 @@ def main():
                         help='Compress vmdk file')
     parser.add_argument('--vmx',
                         dest='vmx_version',
-                        default='17',
+                        default='21',
                         help='The virtual hardware version')
     parser.add_argument('--eula_file',
                         nargs='?',
