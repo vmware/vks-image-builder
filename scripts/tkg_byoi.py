@@ -437,7 +437,7 @@ def format_name(suffix, *default_values):
     return '-'.join([default_name, suffix])
 
 
-def render_additional_packer_variables(additional_packer_variables):
+def render_additional_packer_variables(additional_packer_variables, os_type):
     """
     Creates a single JSON object after parses all files then
     applies the Jinja2 templating using jinja_args_map dictionary.
@@ -453,6 +453,14 @@ def render_additional_packer_variables(additional_packer_variables):
             if os.path.exists(variable_file):
                 with open(variable_file, 'r') as fp:
                     output.update(json.load(fp))
+    
+    os_type_parts = os_type.split('-')
+    if len(os_type_parts) > 0 and os_type_parts[0].lower() == 'windows':
+        windows_admin_password = os.environ.get("WINDOWS_ADMIN_PASSWORD")
+        if windows_admin_password is None:
+            print("Missing environment variable definition '{}' for OS type '{}'".format("WINDOWS_ADMIN_PASSWORD", os_type))
+            exit(1)
+        output["windows_admin_password"] = windows_admin_password
     print("Additional Packer Variables: ", json.dumps(output, indent=4))
     return output
 
@@ -501,7 +509,7 @@ def render_default_config(args):
         args.default_config_folder, args.os_type))
     packer_vars.update(render_extra_repos(args.override_package_repositories))
     packer_vars.update(render_additional_packer_variables(
-        args.additional_packer_variables))
+        args.additional_packer_variables, args.os_type))
 
 
 def render_extra_repos(comma_sep_repo_list):
