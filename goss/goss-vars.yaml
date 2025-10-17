@@ -659,6 +659,7 @@ tkg:
       isal:
       tuned:
       nftables:
+      xfsprogs:
     command:
       antctl version 2>/dev/null | awk '{split($0,a," ");split(a[2],b,"-");print b[1];}':
         exit-status: 0
@@ -853,6 +854,7 @@ tkg:
       cifs-utils:
       isa-l:
       tuned:
+      xfsprogs:
     command:
       antctl version 2>/dev/null | awk '{split($0,a," ");split(a[2],b,"-");print b[1];}':
         exit-status: 0
