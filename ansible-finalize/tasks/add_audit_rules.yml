@@ -1,0 +1,18 @@
+---
+- name: Add STIG audit rules for privileged functions
+  block:
+    - name: Check if audit.STIG.rules file exists
+      ansible.builtin.stat:
+        path: /etc/audit/rules.d/audit.STIG.rules
+      register: audit_stig_file
+
+    - name: Add privileged function audit rules
+      ansible.builtin.lineinfile:
+        path: /etc/audit/rules.d/audit.STIG.rules
+        insertafter: "# PHTN-50-000107 audit privileged functions"
+        line: "{{ item }}"
+        state: present
+      loop:
+        - "-a always,exit -F path=/usr/bin/pkexec -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged"
+        - "-a always,exit -F path=/usr/lib/polkit-1/polkit-agent-helper-1 -F perm=x -F auid>=1000 -F auid!=unset -F key=privileged"
+      when: audit_stig_file.stat.exists
