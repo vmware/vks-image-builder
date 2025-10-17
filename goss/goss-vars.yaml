@@ -751,6 +751,36 @@ tkg:
         mode: "0600"
         filetype: file
         contains:
+    stig:
+      package:
+        aide:
+        aide-common:
+        audispd-plugins:
+        vlock:
+        libpam-pwquality:
+        libpam-sss:
+        libnss-sss:
+      files:
+        "/etc/apt/apt.conf.d/50unattended-upgrades":
+          exists: true
+          filetype: file
+          contains:
+            - 'Unattended-Upgrade::Remove-Unused-Dependencies "true"'
+            - 'Unattended-Upgrade::Remove-Unused-Kernel-Packages "true"'
+        "/etc/modprobe.d/DISASTIG.conf":
+          exists: true
+          filetype: file
+          contains:
+            - "install usb-storage /bin/false"
+            - "blacklist usb-storage"
+        "/etc/ssh/sshd_config":
+          exists: true
+          filetype: file
+          contains:
+            - "PermitEmptyPasswords no"
+            - "PermitUserEnvironment no"
+            - "X11Forwarding no"
+            - "X11UseLocalhost yes"
   photon:
     package:
       glibc:

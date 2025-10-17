@@ -101,6 +101,15 @@ command:
   {{end}}
 {{end}}
 
+#STIG specific changes.
+{{range $name, $vers := index .Vars.tkg .Vars.OS "stig" "package"}}
+  {{$name}}:
+    installed: true
+  {{range $key, $val := $vers}}
+    {{$key}}: {{$val}}
+  {{end}}
+{{end}}
+
 # Iterate thru different OS Versions like RHEL7/8, Photon 3/4(future) etc.
 {{$distro_version := .Vars.OS_VERSION}}
 {{range $component := index .Vars.tkg .Vars.OS .Vars.PROVIDER "os_version"}}

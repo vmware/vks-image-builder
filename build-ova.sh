@@ -79,8 +79,8 @@ function generate_custom_ovf_properties() {
 
 
 function download_stig_files() {
-    if [[ "$OS_TARGET" != "photon-3" && "$OS_TARGET" != "photon-5" && "$OS_TARGET" != "ubuntu-2204-efi" ]]; then
-        echo "Skipping STIG setup as '${OS_TARGET}' is not STIG Compliant"
+    if [[ "$OS_TARGET" != "photon-3" && "$OS_TARGET" != "photon-5" ]]; then
+        echo "Skipping STIG setup as '${OS_TARGET}' is not Photon based"
         return
     fi
 
@@ -102,12 +102,6 @@ function download_stig_files() {
         tar -xvf vmware-photon-5.0-stig-ansible-hardening.tar.gz -C "${image_builder_root}/image/tmp/"
         mv ${image_builder_root}/image/tmp/vmware-photon-5.0-stig-ansible-hardening-* "${stig_compliance_dir}"
         rm -rf vmware-photon-5.0-stig-ansible-hardening.tar.gz
-    elif [ ${OS_TARGET} == "ubuntu-2204-efi" ]
-    then
-        wget -q http://${HOST_IP}:${ARTIFACTS_CONTAINER_PORT}/artifacts/vmware-ubuntu-22.04-stig-ansible-hardening.tar.gz
-        tar -xvf vmware-ubuntu-22.04-stig-ansible-hardening.tar.gz -C "${image_builder_root}/image/tmp/"
-        mv ${image_builder_root}/image/tmp/vmware-ubuntu-22.04-stig-ansible-hardening-* "${stig_compliance_dir}"
-        rm -rf vmware-ubuntu-22.04-stig-ansible-hardening.tar.gz
     fi
 }
 

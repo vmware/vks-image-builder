@@ -28,3 +28,12 @@ file:
     - {{.}}
   {{end}}
 {{end}}
+#VKr STIG specific changes.
+{{range $name, $vers := index .Vars.tkg .Vars.OS "stig" "files"}}
+  {{ $name }}:
+    exists: {{ $vers.exists }}
+    filetype: {{ $vers.filetype }}
+    contains: {{ range $vers.contains}}
+    - {{.}}
+  {{end}}
+{{end}}

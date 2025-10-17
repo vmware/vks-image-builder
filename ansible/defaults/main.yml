@@ -25,3 +25,6 @@ retag_images: true
 enable_ubuntu_hwe: "False"
 journald_system_max_use: 2G
 enable_garp_notify_all: true
+usb_storage: |
+  install usb-storage /bin/false
+  blacklist usb-storage
