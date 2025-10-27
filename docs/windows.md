@@ -54,6 +54,23 @@ You may customize the Windows Node Image with a [Windows setup answer file][wind
 
 The upstream Windows setup answer file can be found at [Image Builder][ib-windows-unattended-xml].
 
+The following snippet shows how to download the upstream Windows setup answer file.
+
+```bash
+curl https://raw.githubusercontent.com/kubernetes-sigs/image-builder/refs/heads/main/images/capi/packer/ova/windows/windows-2022-efi/autounattend.xml -o /home/image-builder/windows_autounattend.xml
+```
+
+### Update the Administrator user password
+
+Administrator password that is used during the node image generation, can be set using `windows_admin_password` packer variables and can be updated in [default-args-windows.j2][default-args-windows.j2] as shown below
+
+```jinja
+  "enable_auto_kubelet_service_restart": "false",
+  "windows_admin_password": "Secret@123"
+```
+
+_**Note**_: It is important to update the administrator password which conforms with the organizational policies in place.
+
 ### Provision Administrative Account for Log Collection
 
 In order for the Windows nodes to work with the [vSphere Kubernetes Service support bundle tool][gather-logs], you need to add an administrative account in the answer file.
@@ -61,7 +78,6 @@ In order for the Windows nodes to work with the [vSphere Kubernetes Service supp
 The following snippet shows how to add an administrative account in the answer file.
 
 ```bash
-curl https://raw.githubusercontent.com/kubernetes-sigs/image-builder/refs/heads/main/images/capi/packer/ova/windows/windows-2022-efi/autounattend.xml -o /home/image-builder/windows_autounattend.xml
 vi /home/image-builder/windows_autounattend.xml
 ```
 
@@ -259,3 +275,4 @@ You may refer to [this link][supervisor-8-release-notes] for generic known issue
 [gather-logs]: https://knowledge.broadcom.com/external/article/345464/gathering-logs-for-vsphere-with-tanzu.html
 [vsphere-service-with-supervisor]: https://techdocs.broadcom.com/us/en/vmware-cis/vsphere/vsphere-supervisor/8-0/using-tkg-service-with-vsphere-supervisor.html
 [supervisor-8-release-notes]:https://techdocs.broadcom.com/us/en/vmware-cis/vsphere/vsphere-supervisor/8-0/release-notes/vmware-tkrs-release-notes.html
+[default-args-windows.j2]: ../packer-variables/windows/default-args-windows.j2

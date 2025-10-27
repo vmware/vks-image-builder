@@ -39,3 +39,9 @@
     executable: /bin/bash
 
 - ansible.builtin.import_tasks: disable_pwd_rotation.yml
+
+- ansible.builtin.import_tasks: ubuntu-stig.yml
+  when: ansible_os_family == "Debian"
+
+- ansible.builtin.import_tasks: photon-stig.yml
+  when: ansible_os_family == "VMware Photon OS"

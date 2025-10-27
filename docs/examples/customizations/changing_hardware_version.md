@@ -16,7 +16,7 @@ By default, node images use the hardware version(`VMX`) 17 defined in [default-a
 [Kubernetes Image Builder][kubernetes-image-builder] has a `vmx_version` packer variable through which the hardware version can be configured. Edit the `vmx_version` filed in the [default-args.j2][default-args] present in [packer variables](./../../packer-variables/) folder with the appropriate hardware version and build the image
 
 ```text
-    "vmx_version": "17",
+    "vmx_version": "21",
 ```
 
 - _**Note**: For Windows, update the `vmx_version` in the [default-args-windows.j2][default-args-windows] file._

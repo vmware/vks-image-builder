@@ -91,12 +91,21 @@
           +++ /usr/lib/python3/dist-packages/cloudinit/net/netplan.py_2	2025-06-02 06:14:40.349638339 +0000
           @@ -348,7 +348,7 @@
                    content = header + content
-          
+
                    netplan_config_changed = has_netplan_config_changed(fpnplan, content)
           -        if not netplan_api_write_yaml_file(content):
           +        if True:
                        fallback_write_netplan_yaml(fpnplan, content)
-          
+
                    if self.clean_default:
     - name: Apply the netplan patch
-      ansible.builtin.command: patch -i /tmp/netplan.patch /usr/lib/python3/dist-packages/cloudinit/net/netplan.py 
+      ansible.builtin.command: patch -i /tmp/netplan.patch /usr/lib/python3/dist-packages/cloudinit/net/netplan.py
+
+- name: Create symlinks for grub2 configs
+  ansible.builtin.file:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    state: link
+  loop:
+    - { src: "/usr/bin/grub-editenv", dest: "/usr/bin/grub2-editenv" }
+    - { src: "/boot/grub/grub.cfg", dest: "/etc/grub2.cfg" }

@@ -10,7 +10,6 @@ photon_va_hardening_url: "{{ artifacts_container_url }}/artifacts/photon_hardeni
 va_hardening_rpm_version: "3.0"
 va_hardening_rpm_release: "{{ imageVersion }}"
 carvel_tools: "/tmp/carvel-tools"
-run_registry_as_service: false
 registry_root_directory: "/storage/container-registry"
 registry_config_dir: "/etc/registry"
 registry_config_path: "{{ registry_config_dir }}/config.yaml"
@@ -21,7 +20,19 @@ systemd_networkd_update_initramfs: >-
   {%- elif ansible_os_family == 'Debian' -%}
   update-initramfs -u
   {%- endif -%}
-retag_images: true
 enable_ubuntu_hwe: "False"
 journald_system_max_use: 2G
 enable_garp_notify_all: true
+usb_storage: |
+  install usb-storage /bin/false
+  blacklist usb-storage
+ubuntu_stig_debs:
+  - aide
+  - aide-common
+  - audispd-plugins
+  - vlock
+  - libpam-pwquality
+  - libpam-sss
+  - libnss-sss
+photon_stig_rpms:
+  - grub2

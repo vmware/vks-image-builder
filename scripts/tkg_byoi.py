@@ -146,10 +146,6 @@ def populate_jinja_args(args):
 
     jinja_args_map['registry_store_path'] = get_registry_store_path(args)
 
-    # TODO: change the versions to enable this feature
-    run_registry_as_service = semver.Version(k8sversion.major, k8sversion.minor, k8sversion.patch).compare("1.31.0") >= 0
-    jinja_args_map["run_registry_as_service"] = run_registry_as_service
-
     print("Jinja Args:", jinja_args_map)
 
 
@@ -240,35 +236,38 @@ def copy_ova(args):
     print("Copying OVA from {} to {}".format(old_path, new_path))
     shutil.copyfile(old_path, new_path)
 
-    # Copy the package list
-    old_path = os.path.join(default_ova_destination_folder, "package_list.json")
-    new_path = os.path.join(args.ova_destination_folder, "package_list.json")
-    print("Copying package list file from {} to {}".format(old_path, new_path))
-    shutil.copyfile(old_path, new_path)
+    # Do the below only for linux based OSes
+    # We are assuming here that if its not windows based, its linux based (since we do not generate for MacOS)
+    if not args.os_type.startswith("windows"):
+        # Copy the package list
+        old_path = os.path.join(default_ova_destination_folder, "package_list.json")
+        new_path = os.path.join(args.ova_destination_folder, "package_list.json")
+        print("Copying package list file from {} to {}".format(old_path, new_path))
+        shutil.copyfile(old_path, new_path)
 
-    # Copy the kernel config file
-    old_path = os.path.join(default_ova_destination_folder, "kernel.config")
-    new_path = os.path.join(args.ova_destination_folder, "kernel.config")
-    print("Copying kernel config file from {} to {}".format(old_path, new_path))
-    shutil.copyfile(old_path, new_path)
+        # Copy the kernel config file
+        old_path = os.path.join(default_ova_destination_folder, "kernel.config")
+        new_path = os.path.join(args.ova_destination_folder, "kernel.config")
+        print("Copying kernel config file from {} to {}".format(old_path, new_path))
+        shutil.copyfile(old_path, new_path)
 
-    # Copy the OS manifest file
-    old_path = os.path.join(default_ova_destination_folder, "os_manifest.json")
-    new_path = os.path.join(args.ova_destination_folder, "os_manifest.json")
-    print("Copying OS manifest file from {} to {}".format(old_path, new_path))
-    shutil.copyfile(old_path, new_path)
+        # Copy the OS manifest file
+        old_path = os.path.join(default_ova_destination_folder, "os_manifest.json")
+        new_path = os.path.join(args.ova_destination_folder, "os_manifest.json")
+        print("Copying OS manifest file from {} to {}".format(old_path, new_path))
+        shutil.copyfile(old_path, new_path)
 
-    # Copy the Kernel Tunable details
-    old_path = os.path.join(default_ova_destination_folder, "kernel_tunables.tgz")
-    new_path = os.path.join(args.ova_destination_folder, "kernel_tunables.tgz")
-    print("Copying kernel tunables from {} to {}".format(old_path, new_path))
-    shutil.copyfile(old_path, new_path)
+        # Copy the Kernel Tunable details
+        old_path = os.path.join(default_ova_destination_folder, "kernel_tunables.tgz")
+        new_path = os.path.join(args.ova_destination_folder, "kernel_tunables.tgz")
+        print("Copying kernel tunables from {} to {}".format(old_path, new_path))
+        shutil.copyfile(old_path, new_path)
 
-    # Copy the Source repo details
-    old_path = os.path.join(default_ova_destination_folder, "repo_sources.tgz")
-    new_path = os.path.join(args.ova_destination_folder, "repo_sources.tgz")
-    print("Copying repo source details from {} to {}".format(old_path, new_path))
-    shutil.copyfile(old_path, new_path)
+        # Copy the Source repo details
+        old_path = os.path.join(default_ova_destination_folder, "repo_sources.tgz")
+        new_path = os.path.join(args.ova_destination_folder, "repo_sources.tgz")
+        print("Copying repo source details from {} to {}".format(old_path, new_path))
+        shutil.copyfile(old_path, new_path)
         
     print("Copying completed")
 
@@ -437,7 +436,7 @@ def format_name(suffix, *default_values):
     return '-'.join([default_name, suffix])
 
 
-def render_additional_packer_variables(additional_packer_variables):
+def render_additional_packer_variables(additional_packer_variables, os_type):
     """
     Creates a single JSON object after parses all files then
     applies the Jinja2 templating using jinja_args_map dictionary.
@@ -453,6 +452,13 @@ def render_additional_packer_variables(additional_packer_variables):
             if os.path.exists(variable_file):
                 with open(variable_file, 'r') as fp:
                     output.update(json.load(fp))
+    
+    if os_type.startswith("windows")  and output.get("windows_admin_password") is None:
+        windows_admin_password = os.environ.get("WINDOWS_ADMIN_PASSWORD")
+        if windows_admin_password is None:
+            print("Either set `{}' in packer variables or set '{}' environment variable for OS type '{}'.` ".format("windows_admin_password", "WINDOWS_ADMIN_PASSWORD", os_type))
+            exit(1)
+        output["windows_admin_password"] = windows_admin_password
     print("Additional Packer Variables: ", json.dumps(output, indent=4))
     return output
 
@@ -501,7 +507,7 @@ def render_default_config(args):
         args.default_config_folder, args.os_type))
     packer_vars.update(render_extra_repos(args.override_package_repositories))
     packer_vars.update(render_additional_packer_variables(
-        args.additional_packer_variables))
+        args.additional_packer_variables, args.os_type))
 
 
 def render_extra_repos(comma_sep_repo_list):

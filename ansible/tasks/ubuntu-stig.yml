@@ -1,0 +1,46 @@
+- name: "Install Packages - STIG Support"
+  ansible.builtin.apt:
+    name: "{{ ubuntu_stig_debs }}"
+    state: present
+
+- name: "Block usb-storage"
+  ansible.builtin.copy:
+    content: |
+      install usb-storage /bin/false
+      blacklist usb-storage
+    dest: /etc/modprobe.d/DISASTIG.conf
+
+- name: "[Common] sshd_config"
+  ansible.builtin.lineinfile:
+    dest: /etc/ssh/sshd_config
+    state: present
+    regexp: "^{{ item.key }} "
+    validate: "/usr/sbin/sshd -T -f %s"
+    line: "{{ item.key }} {{ item.value }} "
+  with_items:
+    - key: PermitEmptyPasswords
+      value: "no"
+    - key: PermitUserEnvironment
+      value: "no"
+    - key: X11Forwarding
+      value: "no"
+    - key: X11UseLocalhost
+      value: "yes"
+
+- name: "Remove unused/older installations/dependencies"
+  block:
+    - name: "Set Remove-Unused-Kernel-Packages"
+      ansible.builtin.lineinfile:
+        dest: /etc/apt/apt.conf.d/50unattended-upgrades
+        regexp: "^(#)?Unattended-Upgrade::Remove-Unused-Kernel-Packages"
+        line: 'Unattended-Upgrade{{ ''::'' }}Remove-Unused-Kernel-Packages "true";'
+        state: present
+        create: true
+
+    - name: "Set Remove-Unused-Dependencies"
+      ansible.builtin.lineinfile:
+        dest: /etc/apt/apt.conf.d/50unattended-upgrades
+        regexp: "^(#)?Unattended-Upgrade::Remove-Unused-Dependencies"
+        line: 'Unattended-Upgrade{{ ''::'' }}Remove-Unused-Dependencies "true";'
+        state: present
+        create: true

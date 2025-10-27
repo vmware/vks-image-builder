@@ -1,6 +1,9 @@
 # © Broadcom. All Rights Reserved.
-# The term “Broadcom” refers to Broadcom Inc. and/or its subsidiaries.
+# The term "Broadcom" refers to Broadcom Inc. and/or its subsidiaries.
 # SPDX-License-Identifier: MPL-2.0
 ---
+- ansible.builtin.import_tasks: add_audit_rules.yml
+  when: ansible_os_family == "VMware Photon OS"
+
 - ansible.builtin.import_tasks: gather_info.yml
   when: ansible_os_family in ["Debian", "VMware Photon OS"]

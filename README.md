@@ -32,6 +32,15 @@ Below are the prerequisites for building the node images
 ![Demo](./docs/files/demo.gif)
 
 - Clone this repository on the linux environment for building the image.
+- Checkout the release branch based on the desired kubernetes minor or checkout the specific tag based on the release version.
+
+  | Kubernetes Minor | Release Branch |
+  | --- | ---|
+  | 1.31 | release-1.31 |
+  | 1.32 | release-1.32 |
+  | 1.33 | release-1.33 |
+  | 1.34 | release-1.34 |
+
 - Update the vSphere environment details like vCenter IP, Username, Password, etc. in [vsphere.j2](packer-variables/vsphere.j2)
   - For details on the permissions required for the user please refer to the packer [vsphere-iso documentation](https://developer.hashicorp.com/packer/plugins/builders/vsphere/vsphere-iso#required-vsphere-privileges).
 - To identify the kubernetes version supported by the branch, check the version information provided in [supported version file][supported-version].

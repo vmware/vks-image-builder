@@ -21,6 +21,11 @@ function copy_custom_image_builder_files() {
     cp image/hack/tkgs_ovf_template.xml hack/ovf_template.xml
 }
 
+function download_ovftool() {
+	wget -q  http://${HOST_IP}:${ARTIFACTS_CONTAINER_PORT}/artifacts/vmware-ovftool.zip || (echo "VMware OVF Tool doesn't exist" && exit 1)
+   unzip vmware-ovftool.zip -d /
+}
+
 function download_configuration_files() {
     # Download kubernetes configuration file
     wget -q http://${HOST_IP}:${ARTIFACTS_CONTAINER_PORT}/artifacts/metadata/kubernetes_config.json
@@ -36,6 +41,43 @@ function download_configuration_files() {
     # Download VKr constraints files
     wget -q http://${HOST_IP}:${ARTIFACTS_CONTAINER_PORT}/artifacts/metadata/vmware-system.kr.destination-semver-constraint.json || echo "override-semver-constraint.json don't exist"
     wget -q http://${HOST_IP}:${ARTIFACTS_CONTAINER_PORT}/artifacts/metadata/vmware-system.kr.override-semver-constraint.json || echo "override-semver-constraint.json don't exist"
+}
+
+# Modify user data to pin kernel to given version for Ubuntu OS
+function modify_user_data() {
+    local os_folder_name=""
+    if [[ "${OS_TARGET}" == "ubuntu-2204-efi" ]]; then
+       os_folder_name="22.04.efi"
+    else 
+       return 0 # OS_TARGET is other than ubuntu22. Skipping the userdata modification.
+    fi
+    if [[ -z "${PRIMARY_INTERNAL_REPO_URL}" && -z "${SECURITY_INTERNAL_REPO_URL}" && -z "${UPDATE_INTERNAL_REPO_URL}" ]]; then
+           echo "Warning: Internal Repositories are not set. Using default Ubuntu apt repository."
+           return 0
+    fi
+    local user_data_file="/image-builder/images/capi/packer/ova/linux/ubuntu/http/${os_folder_name}/user-data.tmpl"
+    if [[ ! -f "${user_data_file}" ]]; then exit 1; fi
+
+    # Use heredoc to define the multi-line string
+    local apt_section_yaml=$(cat <<EOF
+  apt:
+      preserve_sources_list: false
+      fallback: offline-install
+      primary:
+        - arches: [ amd64 ]
+          uri: ${PRIMARY_INTERNAL_REPO_URL}
+      security:
+        - arches: [ amd64 ]
+          uri: ${SECURITY_INTERNAL_REPO_URL} 
+      updates:
+        - arches: [ amd64 ]
+          uri: ${UPDATE_INTERNAL_REPO_URL} 
+EOF
+)
+    sed -i "/^autoinstall:/r /dev/stdin" "${user_data_file}" <<< "${apt_section_yaml}"
+    echo "INFO: User-data template modified successfully. Final Content:"
+    cat "${user_data_file}"
+    return 0
 }
 
 # Generate packaer input variables based on packer-variables folder
@@ -77,10 +119,22 @@ function generate_custom_ovf_properties() {
     --outfile ${custom_ovf_properties_file}
 }
 
+function apply_ib_patches() {
+    patch_dir="${image_builder_root}/patches"
+    if [ -d "${patch_dir}" ] && [ -n "$(ls -A ${patch_dir})" ]; then
+        echo "Applying patches on upstream Image Builder changes"
+        cp ${patch_dir}/*.patch ./
+        git apply *.patch
+        rm *.patch
+    else
+        echo "No patches needs to get applied since '${patch_dir}' does not exist or is empty" 
+    fi
+}
+
 
 function download_stig_files() {
-    if [[ "$OS_TARGET" != "photon-3" && "$OS_TARGET" != "photon-5" && "$OS_TARGET" != "ubuntu-2204-efi" ]]; then
-        echo "Skipping STIG setup as '${OS_TARGET}' is not STIG Compliant"
+    if [[ "$OS_TARGET" != "photon-3" && "$OS_TARGET" != "photon-5" ]]; then
+        echo "Skipping STIG setup as '${OS_TARGET}' is not Photon based"
         return
     fi
 
@@ -102,12 +156,6 @@ function download_stig_files() {
         tar -xvf vmware-photon-5.0-stig-ansible-hardening.tar.gz -C "${image_builder_root}/image/tmp/"
         mv ${image_builder_root}/image/tmp/vmware-photon-5.0-stig-ansible-hardening-* "${stig_compliance_dir}"
         rm -rf vmware-photon-5.0-stig-ansible-hardening.tar.gz
-    elif [ ${OS_TARGET} == "ubuntu-2204-efi" ]
-    then
-        wget -q http://${HOST_IP}:${ARTIFACTS_CONTAINER_PORT}/artifacts/vmware-ubuntu-22.04-stig-ansible-hardening.tar.gz
-        tar -xvf vmware-ubuntu-22.04-stig-ansible-hardening.tar.gz -C "${image_builder_root}/image/tmp/"
-        mv ${image_builder_root}/image/tmp/vmware-ubuntu-22.04-stig-ansible-hardening-* "${stig_compliance_dir}"
-        rm -rf vmware-ubuntu-22.04-stig-ansible-hardening.tar.gz
     fi
 }
 
@@ -127,7 +175,7 @@ function trigger_image_builder() {
     ON_ERROR_ASK=1 PATH=$PATH:/home/imgbuilder-ova/.local/bin PACKER_CACHE_DIR=/image-builder/packer_cache \
     PACKER_VAR_FILES="${image_builder_root}/packer-variables.json"  \
     OVF_CUSTOM_PROPERTIES=${custom_ovf_properties_file} \
-    IB_OVFTOOL=1 ANSIBLE_TIMEOUT=180 IB_OVFTOOL_ARGS="--allowExtraConfig" \
+    PACKER_NO_COLOR=1 IB_OVFTOOL=1 ANSIBLE_TIMEOUT=180 IB_OVFTOOL_ARGS="--allowExtraConfig" \
     make build-node-ova-vsphere-${OS_TARGET}
 }
 
@@ -148,9 +196,12 @@ function copy_ova() {
 function main() {
     copy_custom_image_builder_files
     download_configuration_files
+    download_ovftool
     generate_packager_configuration
+    modify_user_data
     generate_custom_ovf_properties
     download_stig_files
+    apply_ib_patches
     packer_logging
     trigger_image_builder
     copy_ova

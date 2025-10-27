@@ -1,0 +1,9 @@
+- name: "Concatenate the STIG required Photon RPMs"
+  ansible.builtin.set_fact:
+    photon_rpms: "{{ photon_stig_rpms | join(' ') }}"
+
+- name: "Install Packages - STIG Support"
+  ansible.builtin.command: tdnf install {{ photon_rpms }} -y
+  when: photon_rpms != ""
+  register: install_output
+  changed_when: install_output.rc != 0

@@ -12,16 +12,6 @@ command:
   crictl ps:
     exit-status: 0
     timeout: 0
-{{ if not .Vars.tkg.run_registry_as_service }}
-  ctr -n k8s.io image ls 2>/dev/null | grep docker-registry | grep 'io.cri-containerd.pinned=pinned':
-    exit-status: 0
-    stderr: []
-    timeout: 10000 # in ms
-  ctr -n k8s.io image ls 2>/dev/null | grep pause | grep 'io.cri-containerd.pinned=pinned':
-    exit-status: 0
-    stderr: []
-    timeout: 10000 # in ms
-{{end}}
 {{if ne .Vars.containerd_wasm_shims_runtimes ""}}
   containerd-shim-lunatic-v1:
     exit-status: 1
@@ -48,34 +38,6 @@ command:
     stdout: [ ]
     stderr: [ ]
     timeout: 0
-{{end}}
-{{if eq .Vars.kubernetes_source_type "pkg"}}
-{{if eq .Vars.kubernetes_cni_source_type "pkg"}}
-# Upstream IB uses 'print $2' for fetching image actual name, but in our case this will differ since we tag image to localhost registry 
-  crictl images | grep -v 'IMAGE ID' | awk -F'[ /]' '{print $3}' | sed 's/-{{ .Vars.arch }}//g' | sort:
-    exit-status: 0
-    stderr: []
-    timeout: 0
-    stdout: ["coredns", "etcd", "kube-apiserver", "kube-controller-manager", "kube-proxy", "kube-scheduler", "pause"]
-{{end}}
-{{end}}
-{{if and (eq .Vars.kubernetes_source_type "http") (eq .Vars.kubernetes_cni_source_type "http") (not .Vars.kubernetes_load_additional_imgs)}}
-# The second last pipe of awk is to take out arch from kube-apiserver-amd64 (i.e. amd64 or any other arch)
-# Upstream IB uses 'print $2' for fetching image actual name, but in our case this will differ since we tag image to localhost registry 
-  crictl images | grep -v 'IMAGE ID' | awk -F'[ /]' '{print $3}' | sed 's/-{{ .Vars.arch }}//g' | sort:
-    exit-status: 0
-    stderr: []
-    timeout: 0
-    stdout: ["kube-apiserver", "kube-controller-manager", "kube-proxy", "kube-scheduler"]
-{{end}}
-{{if and (eq .Vars.kubernetes_source_type "http") (eq .Vars.kubernetes_cni_source_type "http") (.Vars.kubernetes_load_additional_imgs)}}
-# The second last pipe of awk is to take out arch from kube-apiserver-amd64 (i.e. amd64 or any other arch)
-# Upstream IB uses 'print $2' for fetching image actual name, but in our case this will differ since we tag image to localhost registry 
-  crictl images | grep -v 'IMAGE ID' | awk -F'[ /]' '{print $3}' | sed 's/-{{ .Vars.arch }}//g' | sort:
-    exit-status: 0
-    stderr: []
-    timeout: 0
-    stdout: ["coredns", "etcd", "kube-apiserver", "kube-controller-manager", "kube-proxy", "kube-scheduler", "pause"]
 {{end}}
 {{if eq .Vars.kubernetes_source_type "http"}}
   kubectl version --client -o json | jq .clientVersion.gitVersion | tr -d '"' | awk '{print substr($1,2); }':

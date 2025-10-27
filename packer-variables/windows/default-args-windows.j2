@@ -33,6 +33,7 @@
   "custom_role": "true",
   "custom_role_names": "/image-builder/images/capi/image/ansible-windows",
   "ansible_user_vars": "artifacts_container_url=http://{{ host_ip }}:{{ artifacts_container_port }} imageVersion={{ image_version|replace('-', '.') }} registry_store_archive_url=http://{{ host_ip }}:{{ artifacts_container_port }}/artifacts/{{ kubernetes_version }}/registries/{{ registry_store_path }}",
-  "vmx_version": "18",
-  "debug_tools": "false"
+  "vmx_version": "21",
+  "debug_tools": "false",
+  "enable_auto_kubelet_service_restart": "false"
 }

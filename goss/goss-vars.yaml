@@ -101,7 +101,7 @@ photon_4_rpms: &photon_4_rpms
 photon_5_rpms: &photon_5_rpms
   jq:
   openssl-fips-provider:
-
+  nftables:
 arch: "amd64"
 containerd_version: ""
 containerd_wasm_shims_runtimes: ""
@@ -650,13 +650,15 @@ windows:
 
 # This section contains everything unique to TKG
 tkg:
-  run_registry_as_service: true
   ubuntu:
     package:
       iptables-persistent:
       unzip:
       cifs-utils:
       isal:
+      tuned:
+      nftables:
+      xfsprogs:
     command:
       antctl version 2>/dev/null | awk '{split($0,a," ");split(a[2],b,"-");print b[1];}':
         exit-status: 0
@@ -704,6 +706,8 @@ tkg:
         stdout: []
         stderr: []
         timeout: 0
+      "nft --version":
+        exit-status: 0
     service:
       systemd-timesyncd.service:
         enabled: false
@@ -714,6 +718,8 @@ tkg:
       cishardening.service:
         enabled: true
         running: false
+      tuned.service:
+        enabled: true
     kernel-param:
     ova:
       os_version:
@@ -751,6 +757,44 @@ tkg:
         mode: "0600"
         filetype: file
         contains:
+      "/usr/bin/grub2-editenv":
+        exists: true
+        filetype: symlink
+        contains:
+      "/etc/grub2.cfg":
+        exists: true
+        filetype: symlink
+        contains:
+    stig:
+      package:
+        aide:
+        aide-common:
+        audispd-plugins:
+        vlock:
+        libpam-pwquality:
+        libpam-sss:
+        libnss-sss:
+      files:
+        "/etc/apt/apt.conf.d/50unattended-upgrades":
+          exists: true
+          filetype: file
+          contains:
+            - 'Unattended-Upgrade::Remove-Unused-Dependencies "true"'
+            - 'Unattended-Upgrade::Remove-Unused-Kernel-Packages "true"'
+        "/etc/modprobe.d/DISASTIG.conf":
+          exists: true
+          filetype: file
+          contains:
+            - "install usb-storage /bin/false"
+            - "blacklist usb-storage"
+        "/etc/ssh/sshd_config":
+          exists: true
+          filetype: file
+          contains:
+            - "PermitEmptyPasswords no"
+            - "PermitUserEnvironment no"
+            - "X11Forwarding no"
+            - "X11UseLocalhost yes"
   photon:
     package:
       glibc:
@@ -816,6 +860,8 @@ tkg:
       wget:
       cifs-utils:
       isa-l:
+      tuned:
+      xfsprogs:
     command:
       antctl version 2>/dev/null | awk '{split($0,a," ");split(a[2],b,"-");print b[1];}':
         exit-status: 0
@@ -863,6 +909,8 @@ tkg:
         stdout: []
         stderr: []
         timeout: 0
+      "nft --version":
+        exit-status: 0
     service:
       sshd.service:
         enabled: true
@@ -879,6 +927,11 @@ tkg:
       cishardening.service:
         enabled: true
         running: false
+      tuned.service:
+        enabled: true
+      tdnf-cache-updateinfo.timer:
+        enabled: false
+        running: false
     kernel-param:
     ova:
       os_version:
@@ -891,6 +944,10 @@ tkg:
           package:
             dkms:
       kernel-param:
+    stig:
+      package:
+        grub2:
+      files:
     files:
       "/etc/systemd/journald.conf":
         exists: true

@@ -75,6 +75,11 @@ def downloadUtkgAddonFiles():
     addon_packages = fetch_addon_packages()
     return addon_packages
 
+# str_presenter helps you to format string
+def str_presenter(dumper, data):
+    if len(data.splitlines()) > 1:
+        return dumper.represent_scalar('tag:yaml.org,2002:str', data, style='|')
+    return dumper.represent_scalar('tag:yaml.org,2002:str', data)
 
 def convert_to_xml(data):
     t = Text()
@@ -96,7 +101,7 @@ def create_non_addon_ovf_properties():
 
 def create_non_addon_VKr_constraints_ovf_properties():
     filenames = [ join(tkg_core_directory,"vmware-system.kr.destination-semver-constraint.json"),
-                 join(tkg_core_directory,"vmware-system.kr.override-k8s-semver-version.json")]
+                  join(tkg_core_directory,"vmware-system.kr.override-k8s-semver-version.json")]
     for file in filenames:
         try:
             with open(file) as f:
@@ -104,7 +109,21 @@ def create_non_addon_VKr_constraints_ovf_properties():
                 key = Path(file).stem
                 custom_ovf_properties[key] = convert_to_xml(compress_and_base64_encode(data))
         except IOError:
-            print("couldn't find/read file: ",file)   
+            print("couldn't find/read file: ",file)
+    #  special case to add static resources to ovf properties
+    static_resources_file = join(tkg_core_directory,"static-resources","vmware-system.kr.addon.staticresources.yaml")
+    try:
+        with open(static_resources_file, 'r') as file:
+            tkr_version, _ = fetch_tkr_data()
+            yaml.add_representer(str,str_presenter)
+            documents = list(yaml.safe_load_all(file))
+            data = yaml.dump_all(documents,sort_keys=False,default_flow_style=False)
+            inner_data = set_inner_data(data, "staticresources", tkr_version)
+            key = Path(static_resources_file).stem
+            custom_ovf_properties[key] = inner_data
+    except IOError:
+        print("couldn't find/read static-resources file: ",static_resources_file)
+
 
 # fetch tkr apiversion and tkr version
 def fetch_tkr_data():

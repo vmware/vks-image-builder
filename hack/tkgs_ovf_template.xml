@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright 2023 VMware, Inc.
+    Copyright 2025 Broadcom, Inc.
     SPDX-License-Identifier: MPL-2.0
 -->
 <Envelope xmlns="http://schemas.dmtf.org/ovf/envelope/1" xmlns:cim="http://schemas.dmtf.org/wbem/wscim/1/common" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1" xmlns:rasd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData" xmlns:vmw="http://www.vmware.com/schema/ovf" xmlns:vssd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_VirtualSystemSettingData" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -22,7 +22,7 @@
         <Name>${ARTIFACT_ID}</Name>
         <AnnotationSection>
             <Info>A human-readable annotation</Info>
-            <Annotation>This Virtual Machine is a VMware agent implementing support for the Tanzu Kubernetes Grid Service. Its lifecycle operations are managed by VMware vCenter Server</Annotation>
+            <Annotation>This Virtual Machine is a VMware agent implementing support for the vSphere Kubernetes Service. Its lifecycle operations are managed by vSphere Kubernetes Service.</Annotation>
         </AnnotationSection>
         <OperatingSystemSection ovf:id="${OS_ID}" ovf:version="${OS_VERSION}" vmw:osType="${OS_TYPE}">
             <Info>The operating system installed</Info>
@@ -157,8 +157,8 @@
         </EulaSection>
         <ProductSection>
             <Info>Information about the installed software</Info>
-            <Product>Tanzu Kubernetes Grid Service - Tanzu Kubernetes cluster Image</Product>
-            <Vendor>VMware Inc.</Vendor>
+            <Product>vSphere Kubernetes Service Cluster Node Image</Product>
+            <Vendor>VMware By Broadcom</Vendor>
             <Version>${TYPED_VERSION}</Version>
             <FullVersion>${TYPED_VERSION}</FullVersion>
             <VendorUrl>https://vmware.com</VendorUrl>
