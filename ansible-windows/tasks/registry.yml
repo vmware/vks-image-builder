@@ -40,6 +40,8 @@
     stderr_file: "{{ registry_log_directory | trim }}\\registry.err.log"
     stdout_file: "{{ registry_log_directory | trim }}\\registry.log"
     app_rotate_online: 1
+    retries: 5
+    delay: 10
 
 - name: Download registry store tar archive
   ansible.windows.win_get_url:
