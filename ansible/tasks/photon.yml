@@ -47,3 +47,8 @@
   ansible.builtin.lineinfile:
     path: /etc/pam.d/motdgen
     line: " session     required      pam_exec.so /usr/bin/chmod a+r /var/run/motdgen/motd"
+
+- name: Remove duplicate artifactory repo
+  ansible.builtin.file:
+    path: /etc/yum.repos.d/artifactory-photon-5.repo.disabled
+    state: absent
