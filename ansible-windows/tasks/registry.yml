@@ -53,6 +53,16 @@
   delay: 10
   ignore_errors: no
 
+- name: Start registry service with extended timeout and retries
+  ansible.windows.win_service:
+    name: registry
+    state: started
+  register: registry_start_result
+  until: registry_start_result is succeeded
+  retries: 60
+  delay: 10
+  ignore_errors: no
+
 - name: Download registry store tar archive
   ansible.windows.win_get_url:
     url: "{{ registry_store_archive_url | trim }}"
