@@ -442,23 +442,23 @@ def render_additional_packer_variables(additional_packer_variables, os_type):
     applies the Jinja2 templating using jinja_args_map dictionary.
     """
     output = {}
-    env = Environment(
-        extensions=['jinja2_time.TimeExtension'],
-        loader=BaseLoader
-    )
     if additional_packer_variables is not None:
         additional_packer_var_files = additional_packer_variables.split(",")
         for variable_file in additional_packer_var_files:
             if os.path.exists(variable_file):
                 with open(variable_file, 'r') as fp:
                     output.update(json.load(fp))
-    
-    if os_type.startswith("windows")  and output.get("windows_admin_password") is None:
-        windows_admin_password = os.environ.get("WINDOWS_ADMIN_PASSWORD")
-        if windows_admin_password is None:
-            print("Either set `{}' in packer variables or set '{}' environment variable for OS type '{}'.` ".format("windows_admin_password", "WINDOWS_ADMIN_PASSWORD", os_type))
+
+    if os_type.startswith("windows"):
+        windows_admin_password = (
+            packer_vars.get("windows_admin_password") or
+            os.environ.get("WINDOWS_ADMIN_PASSWORD").strip()
+        )
+        if not windows_admin_password:
+            print("ERROR: windows_admin_password or WINDOWS_ADMIN_PASSWORD parameter is required for Windows.")
             exit(1)
         output["windows_admin_password"] = windows_admin_password
+
     print("Additional Packer Variables: ", json.dumps(output, indent=4))
     return output
 

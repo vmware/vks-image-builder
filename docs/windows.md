@@ -62,11 +62,23 @@ curl https://raw.githubusercontent.com/kubernetes-sigs/image-builder/refs/heads/
 
 ### Update the Administrator user password
 
-Administrator password that is used during the node image generation, can be set using `windows_admin_password` packer variables and can be updated in [default-args-windows.j2][default-args-windows.j2] as shown below
+Administrator password that is used during the node image generation can be set in two ways:
+
+**Method 1: Set in packer variables (Recommended)**
+
+Set `windows_admin_password` in [default-args-windows.j2][default-args-windows.j2]:
 
 ```jinja
   "enable_auto_kubelet_service_restart": "false",
   "windows_admin_password": "Secret@123"
+```
+
+**Method 2: Pass as environment variable to make command**
+
+You can pass the password directly when running the `make build-node-image` command:
+
+```bash
+make build-node-image OS_TARGET=windows-2022-efi TKR_SUFFIX=vkr.4 HOST_IP=192.2.2.3 IMAGE_ARTIFACTS_PATH=/home/image-builder/image WINDOWS_ADMIN_PASSWORD="Secret@123"
 ```
 
 _**Note**_: It is important to update the administrator password which conforms with the organizational policies in place.
@@ -188,8 +200,10 @@ kubernetesrelease.kubernetes.vmware.com/v1.32.0---vmware.6-fips-vkr.2   v1.32.0+
 Example:
 
 ```bash
-make build-node-image OS_TARGET=windows-2022-efi TKR_SUFFIX=vkr.4 HOST_IP=192.2.2.3 IMAGE_ARTIFACTS_PATH=/home/image-builder/image ARTIFACTS_CONTAINER_PORT=8081 AUTO_UNATTEND_ANSWER_FILE_PATH=/home/image-builder/windows_autounattend.xml
+make build-node-image OS_TARGET=windows-2022-efi TKR_SUFFIX=vkr.4 HOST_IP=192.2.2.3 IMAGE_ARTIFACTS_PATH=/home/image-builder/image ARTIFACTS_CONTAINER_PORT=8081 AUTO_UNATTEND_ANSWER_FILE_PATH=/home/image-builder/windows_autounattend.xml WINDOWS_ADMIN_PASSWORD="Secret@123"
 ```
+
+Note: If you have set `WINDOWS_ADMIN_PASSWORD` in `supported-context.json`, you don't need to pass it in the command line.
 
 ## Verify the Custom Image
 

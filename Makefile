@@ -88,10 +88,13 @@ define BUILD_NODE_IMAGE
 #   ARTIFACTS_CONTAINER_PORT: [Optional] Artifacts container port, defaults to $(DEFAULT_ARTIFACTS_CONTAINER_PORT)
 #   PACKER_HTTP_PORT: [Optional] Port used by Packer HTTP server for hosting the Preseed/Autoinstall files,
 #                     defaults to $(DEFAULT_PACKER_HTTP_PORT).
+#   WINDOWS_ADMIN_PASSWORD: [Optional] Windows Administrator password for Windows images.
+#                           Can also be set in supported-context.json under docker_build_args.
 # 
 # Example:
 # make build-node-image OS_TARGET=photon-3 TKR_SUFFIX=byoi HOST_IP=1.2.3.4 IMAGE_ARTIFACTS_PATH=$(HOME)/image
 # make build-node-image OS_TARGET=photon-3 TKR_SUFFIX=byoi HOST_IP=1.2.3.4 IMAGE_ARTIFACTS_PATH=$(HOME)/image ARTIFACTS_CONTAINER_PORT=9090 PACKER_HTTP_PORT=9091
+# make build-node-image OS_TARGET=windows-2022-efi TKR_SUFFIX=byoi HOST_IP=1.2.3.4 IMAGE_ARTIFACTS_PATH=$(HOME)/image WINDOWS_ADMIN_PASSWORD="Secret@123"
 endef
 .PHONY: build-node-image
 ifeq ($(PRINT_HELP),y)
