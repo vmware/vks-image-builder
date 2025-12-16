@@ -6,3 +6,5 @@ registry_root_directory: "C:/storage/container-registry"
 registry_log_directory: "C:/var/log/registry"
 goss_download_path: "C:\\tmp"
 log_redirect_script_directory: "C:\\logredirect"
+ansible_winrm_read_timeout_sec: 600
+ansible_winrm_operation_timeout_sec: 590
