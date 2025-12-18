@@ -1,8 +1,12 @@
 # Copyright 2024-25 Broadcom, Inc.
 # SPDX-License-Identifier: MPL-2.0
 
-- name: Copy goss binary
-  win_shell: cp "{{ additional_executables_destination_path }}\\goss.exe" "{{ goss_download_path }}"
+- name: Set GOSS_USE_ALPHA environment variable for Windows
+  ansible.windows.win_environment:
+    state: present
+    name: GOSS_USE_ALPHA
+    value: "1"
+    level: machine
 
 - name: Ensure log redirect directory
   ansible.windows.win_file:
