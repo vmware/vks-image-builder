@@ -30,4 +30,7 @@
 
     # delaycompress: Keep the most recent rotated log uncompressed
     delaycompress
+
+    # su:  To resolve the "parent directory has insecure permissions"
+    su root root
 }
