@@ -167,7 +167,6 @@ command:
     stdout:
     - "sandbox = '{{.Vars.pause_image}}'"
     - "conf_dir = 'C:/etc/cni/net.d'"
-    - "bin_dir = 'C:/opt/cni/bin'"
     - "root = 'C:\\ProgramData\\containerd\\root'"
     - "state = 'C:\\ProgramData\\containerd\\state'"
     timeout: 30000
