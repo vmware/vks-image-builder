@@ -46,12 +46,14 @@ function download_configuration_files() {
 # Modify user data to pin kernel to given version for Ubuntu OS
 function modify_user_data() {
     local os_folder_name=""
-    if [[ "${OS_TARGET}" == "ubuntu-2204-efi" ]]; then
+    if [[ "${OS_TARGET}" == "ubuntu-2404-efi" ]]; then
+       os_folder_name="24.04.efi"
+    elif [[ "${OS_TARGET}" == "ubuntu-2204-efi" ]]; then
        os_folder_name="22.04.efi"
     else 
        return 0 # OS_TARGET is other than ubuntu22. Skipping the userdata modification.
     fi
-    if [[ -z "${PRIMARY_INTERNAL_REPO_URL}" && -z "${SECURITY_INTERNAL_REPO_URL}" && -z "${UPDATE_INTERNAL_REPO_URL}" ]]; then
+    if [[ -z "${INTERNAL_REPO_URL}" ]]; then
            echo "Warning: Internal Repositories are not set. Using default Ubuntu apt repository."
            return 0
     fi
@@ -65,13 +67,13 @@ function modify_user_data() {
       fallback: offline-install
       primary:
         - arches: [ amd64 ]
-          uri: ${PRIMARY_INTERNAL_REPO_URL}
+          uri: ${INTERNAL_REPO_URL}
       security:
         - arches: [ amd64 ]
-          uri: ${SECURITY_INTERNAL_REPO_URL} 
+          uri: ${INTERNAL_REPO_URL} 
       updates:
         - arches: [ amd64 ]
-          uri: ${UPDATE_INTERNAL_REPO_URL} 
+          uri: ${INTERNAL_REPO_URL} 
 EOF
 )
     sed -i "/^autoinstall:/r /dev/stdin" "${user_data_file}" <<< "${apt_section_yaml}"
