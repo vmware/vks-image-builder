@@ -943,5 +943,9 @@ tkg:
         exists: false
         filetype: file
         contains:
+      "/etc/logrotate.d/rsyslog":
+        exists: true
+        filetype: file
+        contains:
   windows:
     files:
