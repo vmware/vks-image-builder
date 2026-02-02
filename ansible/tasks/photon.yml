@@ -44,3 +44,6 @@
   ansible.builtin.systemd:
     masked: true
     name: systemd-timesyncd.service
+
+- ansible.builtin.import_tasks: update_audit_rules.yml
+  when: ansible_os_family == "VMware Photon OS"
