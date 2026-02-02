@@ -42,3 +42,12 @@
   ansible.builtin.file:
     path: /etc/ssl/provider_fips.cnf
     state: absent
+
+- name: Rollback SSH hardening - Deletions
+  ansible.builtin.lineinfile:
+    state: absent
+    path: /etc/ssh/sshd_config
+    regexp: "^{{ item }} "
+  with_list:
+    - "Banner"
+    - "KexAlgorithms"
