@@ -785,3 +785,11 @@ tkg:
         exists: true
         filetype: file
         contains:
+      "/etc/yum.repos.d/artifactory-photon-5.repo":
+        exists: false
+        filetype: file
+        contains:
+      "/etc/yum.repos.d/artifactory-photon-5.repo.disabled":
+        exists: false
+        filetype: file
+        contains:
