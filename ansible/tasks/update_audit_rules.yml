@@ -1,7 +1,0 @@
----
-- name: Update STIG audit rules for privileged functions
-  block:
-    - name: Delete audit.STIG.rules file
-      ansible.builtin.file:
-        path: /etc/audit/rules.d/default.rules
-        state: absent
