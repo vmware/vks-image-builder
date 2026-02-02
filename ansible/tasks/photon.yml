@@ -51,3 +51,8 @@
   with_list:
     - "Banner"
     - "KexAlgorithms"
+
+- name: Remove duplicate artifactory repo
+  ansible.builtin.file:
+    path: /etc/yum.repos.d/artifactory-photon-5.repo.disabled
+    state: absent
