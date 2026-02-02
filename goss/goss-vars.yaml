@@ -879,6 +879,9 @@ tkg:
       cishardening.service:
         enabled: true
         running: false
+      tdnf-cache-updateinfo.timer:
+        enabled: false
+        running: false
     kernel-param:
     ova:
       os_version:
