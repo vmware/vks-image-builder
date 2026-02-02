@@ -760,6 +760,9 @@ tkg:
       logredirector.service:
         enabled: true
         running: true
+      tdnf-cache-updateinfo.timer:
+        enabled: false
+        running: false
     kernel-param:
     ova:
       os_version:

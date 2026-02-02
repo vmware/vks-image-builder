@@ -40,12 +40,6 @@
     regexp: "^(photon_cmdline.*)$"
     line: '\1 cgroup.memory=nokmem systemd.legacy_systemd_cgroup_controller=yes'
 
-- name: Disable tdnf cache timer
-  systemd:
-    name: tdnf-cache-updateinfo.timer
-    enabled: no
-    state: stopped
-
 - name: Mask systemd-timesyncd unit
   ansible.builtin.systemd:
     masked: true
