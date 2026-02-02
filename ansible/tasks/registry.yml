@@ -27,18 +27,5 @@
     path: "{{ registry_root_directory | trim }}/registry.tar.gz"
     state: absent
 
-- name: Retag Container Images
-  script: files/scripts/image_retag.py --k8sSemver {{ kubernetes_semver }} --dockerVersion {{ dockerVersion }} --family "{{ ansible_os_family }}" --startRegistry "{{ not (run_registry_as_service | bool) }}"
-  args:
-    executable: python3
-  when: retag_images | bool
-
-- name: List images
-  shell: 'CONTAINERD_NAMESPACE="k8s.io" ctr --address=/var/run/containerd/containerd.sock images ls -q'
-  register: container_list
-  when: retag_images | bool
-
-- name: Print containers
-  debug:
-    var: container_list.stdout_lines
-  when: retag_images | bool
+- name: Remove container images since they are alreay part of registry
+  shell: 'ctr -n k8s.io --address=/var/run/containerd/containerd.sock images rm $(ctr -n k8s.io --address=/var/run/containerd/containerd.sock images ls -q)'
