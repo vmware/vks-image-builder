@@ -232,12 +232,14 @@ def copy_ova(args):
     old_path = os.path.join(default_ova_destination_folder, old_ova_name)
     print("Copying OVA from {} to {}".format(old_path, new_path))
     shutil.copyfile(old_path, new_path)
-
-    # Copy the package list
-    old_path = os.path.join(default_ova_destination_folder, "package_list.json")
-    new_path = os.path.join(args.ova_destination_folder, "package_list.json")
-    print("Copying package list file from {} to {}".format(old_path, new_path))
-    shutil.copyfile(old_path, new_path)
+    # Do the below only for linux based OSes
+    # We are assuming here that if its not windows based, its linux based (since we do not generate for MacOS)
+    if not args.os_type.startswith("windows"):
+        # Copy the package list
+        old_path = os.path.join(default_ova_destination_folder, "package_list.json")
+        new_path = os.path.join(args.ova_destination_folder, "package_list.json")
+        print("Copying package list file from {} to {}".format(old_path, new_path))
+        shutil.copyfile(old_path, new_path)
         
     print("Copying completed")
 
