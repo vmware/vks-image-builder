@@ -45,5 +45,11 @@
     masked: true
     name: systemd-timesyncd.service
 
-- ansible.builtin.import_tasks: update_audit_rules.yml
-  when: ansible_os_family == "VMware Photon OS"
+- name: Rollback SSH hardening - Deletions
+  ansible.builtin.lineinfile:
+    state: absent
+    path: /etc/ssh/sshd_config
+    regexp: "^{{ item }} "
+  with_list:
+    - "Banner"
+    - "KexAlgorithms"
