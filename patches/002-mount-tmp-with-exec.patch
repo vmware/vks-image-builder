@@ -1,0 +1,27 @@
+From 5730cf9b5eaf3e840a351b425dd992de52a53a36 Mon Sep 17 00:00:00 2001
+From: Hardik Jasani <hardik.jasani@broadcom.com>
+Date: Fri, 7 Nov 2025 12:11:48 +0530
+Subject: [PATCH] Mount /tmp with exec for duration of image build
+
+(cherry picked from commit 28db07739baa114f43fa92df6a16b1b6fa757f88)
+---
+ images/capi/ansible/roles/providers/tasks/vmware-photon.yml | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/images/capi/ansible/roles/providers/tasks/vmware-photon.yml b/images/capi/ansible/roles/providers/tasks/vmware-photon.yml
+index c82cecb53..c5e22ea7c 100644
+--- a/images/capi/ansible/roles/providers/tasks/vmware-photon.yml
++++ b/images/capi/ansible/roles/providers/tasks/vmware-photon.yml
+@@ -23,6 +23,9 @@
+     path: /etc/cloud/cloud.cfg.d/99-disable-networking-config.cfg
+     state: absent
+ 
++- name: Update the tmp.mount
++  ansible.builtin.command: mount -o exec,remount /tmp
++
+ - name: Install networkd-dispatcher service (Download from source)
+   ansible.builtin.unarchive:
+     src: "{{ networkd_dispatcher_download_url }}"
+-- 
+2.50.1 (Apple Git-155)
+
