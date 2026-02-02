@@ -10,7 +10,6 @@ photon_va_hardening_url: "{{ artifacts_container_url }}/artifacts/photon_hardeni
 va_hardening_rpm_version: "3.0"
 va_hardening_rpm_release: "{{ imageVersion }}"
 carvel_tools: "/tmp/carvel-tools"
-run_registry_as_service: false
 registry_root_directory: "/storage/container-registry"
 registry_config_dir: "/etc/registry"
 registry_config_path: "{{ registry_config_dir }}/config.yaml"
