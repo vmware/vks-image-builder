@@ -146,10 +146,6 @@ def populate_jinja_args(args):
 
     jinja_args_map['registry_store_path'] = get_registry_store_path(args)
 
-    # TODO: change the versions to enable this feature
-    run_registry_as_service = semver.Version(k8sversion.major, k8sversion.minor, k8sversion.patch).compare("1.31.0") >= 0
-    jinja_args_map["run_registry_as_service"] = run_registry_as_service
-
     print("Jinja Args:", jinja_args_map)
 
 
@@ -240,11 +236,38 @@ def copy_ova(args):
     print("Copying OVA from {} to {}".format(old_path, new_path))
     shutil.copyfile(old_path, new_path)
 
-    # Copy the package list
-    old_path = os.path.join(default_ova_destination_folder, "package_list.json")
-    new_path = os.path.join(args.ova_destination_folder, "package_list.json")
-    print("Copying package list file from {} to {}".format(old_path, new_path))
-    shutil.copyfile(old_path, new_path)
+    # Do the below only for linux based OSes
+    # We are assuming here that if its not windows based, its linux based (since we do not generate for MacOS)
+    if not args.os_type.startswith("windows"):
+        # Copy the package list
+        old_path = os.path.join(default_ova_destination_folder, "package_list.json")
+        new_path = os.path.join(args.ova_destination_folder, "package_list.json")
+        print("Copying package list file from {} to {}".format(old_path, new_path))
+        shutil.copyfile(old_path, new_path)
+
+        # Copy the kernel config file
+        old_path = os.path.join(default_ova_destination_folder, "kernel.config")
+        new_path = os.path.join(args.ova_destination_folder, "kernel.config")
+        print("Copying kernel config file from {} to {}".format(old_path, new_path))
+        shutil.copyfile(old_path, new_path)
+
+        # Copy the OS manifest file
+        old_path = os.path.join(default_ova_destination_folder, "os_manifest.json")
+        new_path = os.path.join(args.ova_destination_folder, "os_manifest.json")
+        print("Copying OS manifest file from {} to {}".format(old_path, new_path))
+        shutil.copyfile(old_path, new_path)
+
+        # Copy the Kernel Tunable details
+        old_path = os.path.join(default_ova_destination_folder, "kernel_tunables.tgz")
+        new_path = os.path.join(args.ova_destination_folder, "kernel_tunables.tgz")
+        print("Copying kernel tunables from {} to {}".format(old_path, new_path))
+        shutil.copyfile(old_path, new_path)
+
+        # Copy the Source repo details
+        old_path = os.path.join(default_ova_destination_folder, "repo_sources.tgz")
+        new_path = os.path.join(args.ova_destination_folder, "repo_sources.tgz")
+        print("Copying repo source details from {} to {}".format(old_path, new_path))
+        shutil.copyfile(old_path, new_path)
         
     print("Copying completed")
 

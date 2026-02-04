@@ -33,13 +33,25 @@
   community.windows.win_nssm:
     name: registry
     start_mode: auto
-    state: started
+    state: present
     application: "{{ registry_install_path | trim }}\\registry.exe"
     arguments: "serve {{ registry_install_path | trim }}\\config.yml"
     app_rotate_bytes: 10485760
     stderr_file: "{{ registry_log_directory | trim }}\\registry.err.log"
     stdout_file: "{{ registry_log_directory | trim }}\\registry.log"
     app_rotate_online: 1
+    retries: 5
+    delay: 10
+
+- name: Start registry service with extended timeout and retries
+  ansible.windows.win_service:
+    name: registry
+    state: started
+  register: registry_start_result
+  until: registry_start_result is succeeded
+  retries: 60
+  delay: 10
+  ignore_errors: no
 
 - name: Download registry store tar archive
   ansible.windows.win_get_url:

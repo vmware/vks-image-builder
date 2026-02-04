@@ -16,11 +16,13 @@ ENV LANG=en_US.UTF-8
 
 SHELL ["/bin/bash", "-c"]
 
-RUN tdnf -y update
-RUN tdnf -y upgrade
+RUN tdnf -y update --refresh
+
+# Pinning the version to overcome SSH Proxy issue
+RUN tdnf -y --enablerepo=photon install openssh-clients-9.3p2-17.ph5
 
 # Install required packages
-RUN for package in unzip git wget build-essential python3-pip jq coreutils openssh-server xorriso grep ; do tdnf -y install "$package" --refresh; done
+RUN for package in unzip git wget build-essential python3-pip jq coreutils xorriso grep ; do tdnf -y install "$package" --refresh; done
 
 # Install Semver
 RUN pip3 install semver jinja2 jinja2-time
@@ -52,6 +54,7 @@ RUN make deps-ova
 RUN command -v packer
 RUN command -v ansible
 
+COPY patches patches
 # Copy the image build script
 COPY build-ova.sh .
 RUN chmod +x build-ova.sh

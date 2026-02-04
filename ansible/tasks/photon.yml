@@ -33,12 +33,6 @@
     regexp: "^(?!.*pos=1)(photon_cmdline.*)"
     line: '\1 pos=1'
 
-- name: Disable tdnf cache timer
-  systemd:
-    name: tdnf-cache-updateinfo.timer
-    enabled: no
-    state: stopped
-
 - name: Mask systemd-timesyncd unit
   ansible.builtin.systemd:
     masked: true
@@ -48,3 +42,48 @@
   ansible.builtin.file:
     path: /etc/ssl/provider_fips.cnf
     state: absent
+
+- name: Rollback SSH hardening - Deletions
+  ansible.builtin.lineinfile:
+    state: absent
+    path: /etc/ssh/sshd_config
+    regexp: "^{{ item }} "
+  with_list:
+    - "Banner"
+    - "KexAlgorithms"
+
+- name: Remove duplicate artifactory repo
+  ansible.builtin.file:
+    path: /etc/yum.repos.d/artifactory-photon-5.repo.disabled
+    state: absent
+
+- name: add logrotate config for rsyslog
+  copy:
+    src: files/etc/logrotate.d/rsyslog_no_su
+    dest: /etc/logrotate.d/rsyslog
+    mode: 0644
+
+- name: Ensure logrotate systemd override directory exists
+  ansible.builtin.file:
+    path: /etc/systemd/system/logrotate.timer.d
+    state: directory
+    mode: '0755'
+
+- name: update logrotate timer config
+  copy:
+    src: files/etc/logrotate.d/override.conf
+    dest: /etc/systemd/system/logrotate.timer.d/override.conf
+    mode: 0644
+  register: timer_override_file
+
+- name: Reload systemd daemon to recognize new configuration
+  ansible.builtin.systemd:
+    daemon_reload: true
+  when: timer_override_file.changed
+
+- name: Re-enable and start the logrotate timer
+  ansible.builtin.systemd:
+    name: logrotate.timer
+    enabled: true
+    state: restarted
+  when: timer_override_file.changed

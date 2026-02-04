@@ -1,0 +1,20 @@
+diff --git a/images/capi/ansible/roles/node/tasks/photon.yml b/images/capi/ansible/roles/node/tasks/photon.yml
+index 0cd9b3546..0182294a7 100644
+--- a/images/capi/ansible/roles/node/tasks/photon.yml
++++ b/images/capi/ansible/roles/node/tasks/photon.yml
+@@ -52,8 +52,15 @@
+     regexp: ^(?!.*apparmor=0)(photon_cmdline.*)
+     line: \1 apparmor=0
+ 
++- name: Check if tdnf cache timer exists
++  ansible.builtin.systemd:
++    name: tdnf-cache-updateinfo.timer
++  register: tdnf_timer_status
++  failed_when: false
++
+ - name: Disable tdnf cache timer
+   ansible.builtin.systemd:
+     name: tdnf-cache-updateinfo.timer
+     enabled: false
+     state: stopped
++  when: tdnf_timer_status.status is defined and tdnf_timer_status.status.LoadState == "loaded"

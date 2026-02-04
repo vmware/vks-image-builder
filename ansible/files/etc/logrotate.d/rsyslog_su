@@ -1,0 +1,36 @@
+/var/log/syslog
+{
+    # compress: Compresses the old log file using gzip (or another configured compression utility).
+    compress
+
+    # nodateext: Prevents adding the current date to the rotated log file's name.
+    # The files will be named logfile.1, logfile.2, etc., instead of logfile-YYYYMMDD.1.
+    nodateext
+
+    # rotate 5: Keeps a total of 5 old rotated log files before the oldest one is deleted.
+    rotate 5
+
+    # daily: Specifies that log files should be rotated once every day.
+    daily
+
+    # maxsize 100M: Rotates the log file only if its size exceeds 100 megabytes,
+    # overriding the 'daily' frequency if this size limit is reached sooner.
+    maxsize 100M
+
+    # missingok: If the log file is missing (not found), do not generate an error message.
+    missingok
+
+    # notifempty: Does not rotate the log file if it is empty.
+    notifempty
+
+    # copytruncate: Copies the original log file's content to the rotated file, and then
+    # truncates (empties) the original log file in place. This is useful for applications
+    # that keep the log file open by file descriptor and cannot be signaled to close it.
+    copytruncate
+
+    # delaycompress: Keep the most recent rotated log uncompressed
+    delaycompress
+
+    # su:  To resolve the "parent directory has insecure permissions"
+    su root root
+}

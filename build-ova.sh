@@ -82,9 +82,21 @@ function generate_custom_ovf_properties() {
     --outfile ${custom_ovf_properties_file}
 }
 
+function apply_ib_patches() {
+    patch_dir="${image_builder_root}/patches"
+    if [ -d "${patch_dir}" ] && [ -n "$(ls -A ${patch_dir})" ]; then
+        echo "Applying patches on upstream Image Builder changes"
+        cp ${patch_dir}/*.patch ./
+        git apply *.patch
+        rm *.patch
+    else
+        echo "No patches needs to get applied since '${patch_dir}' does not exist or is empty" 
+    fi
+}
+
 
 function download_stig_files() {
-    if [[ "$OS_TARGET" != "photon-3" && "$OS_TARGET" != "photon-5" && "$OS_TARGET" != "ubuntu-2204-efi" ]]; then
+    if [[ "$OS_TARGET" != "photon-3" && "$OS_TARGET" != "photon-5" ]]; then
         echo "Skipping STIG setup as '${OS_TARGET}' is not STIG Compliant"
         return
     fi
@@ -107,12 +119,6 @@ function download_stig_files() {
         tar -xvf vmware-photon-5.0-stig-ansible-hardening.tar.gz -C "${image_builder_root}/image/tmp/"
         mv ${image_builder_root}/image/tmp/vmware-photon-5.0-stig-ansible-hardening-* "${stig_compliance_dir}"
         rm -rf vmware-photon-5.0-stig-ansible-hardening.tar.gz
-    elif [ ${OS_TARGET} == "ubuntu-2204-efi" ]
-    then
-        wget -q http://${HOST_IP}:${ARTIFACTS_CONTAINER_PORT}/artifacts/vmware-ubuntu-22.04-stig-ansible-hardening.tar.gz
-        tar -xvf vmware-ubuntu-22.04-stig-ansible-hardening.tar.gz -C "${image_builder_root}/image/tmp/"
-        mv ${image_builder_root}/image/tmp/vmware-ubuntu-22.04-stig-ansible-hardening-* "${stig_compliance_dir}"
-        rm -rf vmware-ubuntu-22.04-stig-ansible-hardening.tar.gz
     fi
 }
 
@@ -157,6 +163,7 @@ function main() {
     generate_packager_configuration
     generate_custom_ovf_properties
     download_stig_files
+    apply_ib_patches
     packer_logging
     trigger_image_builder
     copy_ova
