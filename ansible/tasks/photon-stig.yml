@@ -7,3 +7,18 @@
   when: photon_rpms != ""
   register: install_output
   changed_when: install_output.rc != 0
+
+- name: Rollback SSH hardening - Deletions
+  ansible.builtin.lineinfile:
+    state: absent
+    path: /etc/ssh/sshd_config
+    regexp: "^{{ item }} "
+  with_list:
+    - "Banner"
+    - "KexAlgorithms"
+
+- name: Copy vkr specific audit rules
+  ansible.builtin.copy:
+    src: files/vkr.rules
+    dest: /etc/audit/rules.d/vkr.rules
+    mode: 0640

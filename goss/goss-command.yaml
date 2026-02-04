@@ -74,6 +74,11 @@ command:
     exit-status: 0
     stderr: []
     timeout: 0
+  sshd -T:
+    exit-status: 0
+    stdout:
+      - '!Banner'
+      - '!KexAlgorithms'
 {{end}}
 {{range $name, $vers := index .Vars .Vars.OS .Vars.PROVIDER "command"}}
   {{ $name }}:
