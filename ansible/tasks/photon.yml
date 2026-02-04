@@ -40,13 +40,21 @@
     regexp: "^(photon_cmdline.*)$"
     line: '\1 cgroup.memory=nokmem systemd.legacy_systemd_cgroup_controller=yes'
 
-- name: Disable tdnf cache timer
-  systemd:
-    name: tdnf-cache-updateinfo.timer
-    enabled: no
-    state: stopped
-
 - name: Mask systemd-timesyncd unit
   ansible.builtin.systemd:
     masked: true
     name: systemd-timesyncd.service
+    
+- name: Rollback SSH hardening - Deletions
+  ansible.builtin.lineinfile:
+    state: absent
+    path: /etc/ssh/sshd_config
+    regexp: "^{{ item }} "
+  with_list:
+    - "Banner"
+    - "KexAlgorithms"
+
+- name: Remove duplicate artifactory repo
+  ansible.builtin.file:
+    path: /etc/yum.repos.d/artifactory-photon-5.repo.disabled
+    state: absent
