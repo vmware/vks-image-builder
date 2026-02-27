@@ -51,6 +51,8 @@ WORKDIR images/capi
 ENV LANG=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
 
+# Fix the packer plugin installation failure
+RUN sed -i 's|github.com/hashicorp/vsphere|github.com/vmware/vsphere|' packer/ova/config.pkr.hcl
 RUN make deps-ova
 
 # Make sure packer and ansible are installed properly
