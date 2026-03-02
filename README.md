@@ -16,7 +16,7 @@ vSphere Kubernetes Service Image Builder provides tooling that can be used to bu
 
 ## Deprecation Notice
 
-Release 1.34 VKr will be last minor Kubernetes supported using this repository. Going forward all the releases will be done using Image Baker. For further details on Image Baker, refer to Broadcom documentation
+VKr release 1.34 is the last Kubernetes minor release supported using this repository. Future releases will be made using Image Baker. For further details on Image Baker, refer to the product documentation linked below.
 
 - [VKr 1.35.0 Release Notes](https://techdocs.broadcom.com/us/en/vmware-cis/vcf/vsphere-supervisor-services-and-standalone-components/latest/release-notes/vmware-vkr-release-notes.html#GUID-4075ed17-85c9-4865-b0cd-12c22eb06e60-en_id-7da86e29-96c6-482d-b1b5-40ddb26f6c23)
 - [Building a Custom VKr Machine Image](https://techdocs.broadcom.com/us/en/vmware-cis/vcf/vsphere-supervisor-services-and-standalone-components/latest/managing-vsphere-kubernetes-service/administering-kubernetes-releases-for-tkg-service-clusters/using-kubernetes-releases-with-tkg-service-clusters/building-your-own-vkr-with-image-baker.html)
