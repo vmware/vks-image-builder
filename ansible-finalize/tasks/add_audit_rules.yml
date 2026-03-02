@@ -1,10 +1,6 @@
 ---
 - name: Add STIG audit rules for privileged functions
   block:
-    - name: Delete audit.STIG.rules file
-      ansible.builtin.file:
-        path: /etc/audit/rules.d/audit.STIG.rules
-        state: absent
 
     - name: Copy vkr STIG rules
       ansible.builtin.copy:
