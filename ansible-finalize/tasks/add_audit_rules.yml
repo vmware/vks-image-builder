@@ -1,9 +1,0 @@
----
-- name: Add STIG audit rules for privileged functions
-  block:
-
-    - name: Copy vkr STIG rules
-      ansible.builtin.copy:
-        src: files/vkr.rules
-        dest: /etc/audit/rules.d/vkr.rules
-        mode: 0640
