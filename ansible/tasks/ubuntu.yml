@@ -11,6 +11,13 @@
         - echo "dash dash/sh boolean false" |  debconf-set-selections
         - DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
 
+    - name: Remove netcat package
+      ansible.builtin.apt:
+        name:
+          - netcat
+        state: absent
+        purge: true
+
 - name: Task specific to Ubuntu 24.04 and above
   when: ansible_distribution_version is version('24.04', '>=')
   block:
