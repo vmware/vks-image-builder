@@ -78,6 +78,18 @@
     enabled: true
     state: restarted
 
+- name: Copy chrony-wait systemd unit
+  copy:
+    src: files/etc/systemd/system/chrony-wait.service
+    dest: /etc/systemd/system/chrony-wait.service
+    mode: 0644
+
+- name: Enable chrony-wait service
+  systemd:
+    name: chrony-wait.service
+    daemon_reload: yes
+    enabled: true
+
 # TODO(KK) Investigate difference between upstream yaml and this
 - name: Configure /etc/crictl.yaml
   copy:

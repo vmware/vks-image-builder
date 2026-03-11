@@ -708,6 +708,12 @@ tkg:
         timeout: 0
       "nft --version":
         exit-status: 0
+      systemctl show kubelet.service -p After | grep -q chrony-wait.service:
+        exit-status: 0
+        timeout: 0
+      systemctl show kubelet.service -p Requires | grep -q chrony-wait.service:
+        exit-status: 0
+        timeout: 0
     service:
       systemd-timesyncd.service:
         enabled: false
@@ -716,6 +722,9 @@ tkg:
         enabled: true
         running: true
       cishardening.service:
+        enabled: true
+        running: false
+      chrony-wait.service:
         enabled: true
         running: false
       tuned.service:
@@ -751,6 +760,10 @@ tkg:
         filetype: file
         contains:
       "/usr/local/bin/cis_hardening.sh":
+        exists: true
+        filetype: file
+        contains:
+      "/etc/systemd/system/chrony-wait.service":
         exists: true
         filetype: file
         contains:
@@ -927,6 +940,12 @@ tkg:
         timeout: 0
       "nft --version":
         exit-status: 0
+      systemctl show kubelet.service -p After | grep -q chrony-wait.service:
+        exit-status: 0
+        timeout: 0
+      systemctl show kubelet.service -p Requires | grep -q chrony-wait.service:
+        exit-status: 0
+        timeout: 0
     service:
       sshd.service:
         enabled: true
@@ -941,6 +960,9 @@ tkg:
         enabled: true
         running: true
       cishardening.service:
+        enabled: true
+        running: false
+      chrony-wait.service:
         enabled: true
         running: false
       tuned.service:
@@ -975,6 +997,10 @@ tkg:
         filetype: file
         contains:
       "/usr/local/bin/cis_hardening.sh":
+        exists: true
+        filetype: file
+        contains:
+      "/etc/systemd/system/chrony-wait.service":
         exists: true
         filetype: file
         contains:
