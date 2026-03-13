@@ -5,8 +5,8 @@ Documentation=man:chronyc(1)
 #   chrony.service  = Ubuntu naming
 #   chronyd.service = Photon naming
 # Using Wants ensures this unit does not fail if one name is absent.
-After=chrony.service chronyd.service
-Wants=chrony.service chronyd.service
+After=network-online.target chrony.service chronyd.service
+Wants=network-online.target chrony.service chronyd.service
 # Integrate with the standard systemd time synchronization target
 # so other services depending on time-sync.target also benefit.
 Before=time-sync.target
