@@ -1,0 +1,14 @@
+diff --git a/images/capi/ansible/roles/kubernetes/templates/usr/lib/systemd/system/kubelet.service b/images/capi/ansible/roles/kubernetes/templates/usr/lib/systemd/system/kubelet.service
+index 28ab711..87c19c7 100644
+--- a/images/capi/ansible/roles/kubernetes/templates/usr/lib/systemd/system/kubelet.service
++++ b/images/capi/ansible/roles/kubernetes/templates/usr/lib/systemd/system/kubelet.service
+@@ -2,7 +2,8 @@
+ Description=kubelet: The Kubernetes Node Agent
+ Documentation=https://kubernetes.io/docs/home/
+ Wants=network-online.target
+-After=network-online.target
++After=network-online.target chrony-wait.service
++Requires=chrony-wait.service
+ 
+ [Service]
+ ExecStart={{ sysusr_prefix }}/bin/kubelet

@@ -1,0 +1,33 @@
+[Unit]
+Description=Wait for chrony to synchronize the system clock
+Documentation=man:chronyc(1)
+# Wants (not Requires) both service names for cross-platform support:
+#   chrony.service  = Ubuntu naming
+#   chronyd.service = Photon naming
+# Using Wants ensures this unit does not fail if one name is absent.
+After=network-online.target chrony.service chronyd.service
+Wants=network-online.target chrony.service chronyd.service
+# Integrate with the standard systemd time synchronization target
+# so other services depending on time-sync.target also benefit.
+Before=time-sync.target
+
+[Service]
+# oneshot: the service runs a single command and exits.
+Type=oneshot
+#                    max-tries (0 = unlimited retries)
+#                    |  max-correction in seconds (0.1 = clock must be within 100ms)
+#                    |  |   max-skew in ppm (0.0 = not checked)
+#                    |  |   |   interval in seconds (1 = poll every 1s)
+#                    |  |   |   |
+ExecStart=/usr/bin/chronyc waitsync 0 0.1 0.0 1
+# Cap total wait time at 3 minutes to prevent infinite hang if NTP is unreachable.
+TimeoutStartSec=180
+# Keep the unit in "active" state after chronyc exits so that
+# dependent units (kubelet) see chrony-wait as successfully started.
+RemainAfterExit=yes
+# Log chronyc output to the systemd journal for debugging via:
+#   journalctl -u chrony-wait.service
+StandardOutput=journal
+
+[Install]
+WantedBy=multi-user.target
