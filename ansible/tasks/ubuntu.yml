@@ -11,12 +11,12 @@
         - echo "dash dash/sh boolean false" |  debconf-set-selections
         - DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
 
-    - name: Remove ncat package
-      ansible.builtin.apt:
-        name:
-          - ncat
-        state: absent
-        purge: true
+    - name: Force-remove ncat without cascading to tuned
+      ansible.builtin.shell: |
+        dpkg -r --force-depends ncat
+        sed -i '/^Depends:/ s/, ncat//; /^Depends:/ s/ncat, //; /^Depends:/ s/ncat//' /var/lib/dpkg/status
+      args:
+        executable: /bin/bash
 
 - name: Task specific to Ubuntu 24.04 and above
   when: ansible_distribution_version is version('24.04', '>=')
