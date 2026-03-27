@@ -78,6 +78,7 @@ function build_node_image() {
         $(get_node_image_builder_container_labels "$KUBERNETES_VERSION" "$OS_TARGET") \
         -v $ROOT/ansible:/image-builder/images/capi/image/ansible \
         -v $ROOT/ansible-finalize:/image-builder/images/capi/image/ansible-finalize \
+        -v $ROOT/ansible-pre-firstboot:/image-builder/images/capi/image/ansible-pre-firstboot \
         -v $ROOT/ansible-windows:/image-builder/images/capi/image/ansible-windows \
         -v $ROOT/goss:/image-builder/images/capi/image/goss \
         -v $ROOT/hack:/image-builder/images/capi/image/hack \
