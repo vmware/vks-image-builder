@@ -39,6 +39,11 @@
         enabled: false
         state: stopped
 
+    - name: "Remove telnet package"
+      ansible.builtin.apt:
+        name: "telnet"
+        state: absent
+
 - name: Mask systemd-timesyncd unit
   ansible.builtin.systemd:
     masked: true

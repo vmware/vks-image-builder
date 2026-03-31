@@ -722,6 +722,8 @@ tkg:
         - distro_version: "24.04"
           package:
             dkms:
+          not-installed-package:
+            telnet:
           service:
             lxd-installer.socket:
               enabled: false
