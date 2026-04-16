@@ -65,18 +65,23 @@ function modify_user_data() {
   apt:
       preserve_sources_list: false
       fallback: offline-install
+      disable_suites: []
       primary:
         - arches: [ amd64 ]
           uri: ${INTERNAL_REPO_URL}
       security:
         - arches: [ amd64 ]
-          uri: ${INTERNAL_REPO_URL} 
+          uri: ${INTERNAL_REPO_URL}
       updates:
         - arches: [ amd64 ]
-          uri: ${INTERNAL_REPO_URL} 
+          uri: ${INTERNAL_REPO_URL}
+      backports:
+        - arches: [ amd64 ]
+          uri: ${INTERNAL_REPO_URL}
 EOF
 )
     sed -i "/^autoinstall:/r /dev/stdin" "${user_data_file}" <<< "${apt_section_yaml}"
+    sed -i 's/updates: "all"/updates: "security"/' "${user_data_file}"
     echo "INFO: User-data template modified successfully. Final Content:"
     cat "${user_data_file}"
     return 0
