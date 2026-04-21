@@ -10,6 +10,11 @@
       blacklist usb-storage
     dest: /etc/modprobe.d/DISASTIG.conf
 
+- name: Ensure SSH service is running
+  ansible.builtin.systemd:
+    name: ssh
+    state: started
+
 - name: "[Common] sshd_config"
   ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config
