@@ -2,6 +2,18 @@
 # The term "Broadcom" refers to Broadcom Inc. and/or its subsidiaries.
 # SPDX-License-Identifier: MPL-2.0
 ---
+# tdnf update photon-repos uses existing .repo URLs first; packages.vmware.com repodata 404s—rewrite host, then update.
+- name: Rewrite packages.vmware.com to packages.broadcom.com in /etc/yum.repos.d
+  ansible.builtin.shell: |
+    set -eo pipefail
+    shopt -s nullglob
+    for f in /etc/yum.repos.d/*.repo; do
+      sed -i 's|packages\.vmware\.com|packages.broadcom.com|g' "$f"
+    done
+  args:
+    executable: /bin/bash
+  changed_when: false
+
 - name: Update photon-repos to get repo configs pointing to packages.broadcom.com
   ansible.builtin.command: tdnf update -y photon-repos --refresh
   register: repos_update
