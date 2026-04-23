@@ -65,3 +65,9 @@
 - name: Refresh tdnf cache after snapshot URL update
   ansible.builtin.command: tdnf clean all && tdnf makecache
   changed_when: false
+
+- name: Exclude packages from upgrade
+  ansible.builtin.lineinfile:
+    path: /etc/tdnf/tdnf.conf
+    regexp: ^excludepkgs=
+    line: excludepkgs=photon-repos
