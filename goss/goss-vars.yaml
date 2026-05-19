@@ -752,6 +752,16 @@ tkg:
         mode: "0600"
         filetype: file
         contains:
+      "/etc/modprobe.d/dirty-frag.conf":
+        exists: true
+        filetype: file
+        contains:
+          - "blacklist esp4"
+          - "install esp4 /bin/false"
+          - "blacklist esp6"
+          - "install esp6 /bin/false"
+          - "blacklist rxrpc"
+          - "install rxrpc /bin/false"
   photon:
     package:
       glibc:
@@ -949,5 +959,15 @@ tkg:
         exists: true
         filetype: file
         contains:
+      "/etc/modprobe.d/dirty-frag.conf":
+        exists: true
+        filetype: file
+        contains:
+          - "blacklist esp4"
+          - "install esp4 /bin/false"
+          - "blacklist esp6"
+          - "install esp6 /bin/false"
+          - "blacklist rxrpc"
+          - "install rxrpc /bin/false"
   windows:
     files:
