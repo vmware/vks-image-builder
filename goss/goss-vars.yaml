@@ -85,10 +85,9 @@ common_photon_rpms: &common_photon_rpms
   net-tools:
   openssl-c_rehash:
   python3-pip:
-  rng-tools:
   socat:
   tar:
-  unzip:
+  libarchive:
 
 photon_3_rpms: &photon_3_rpms
   python-netifaces:
@@ -229,7 +228,6 @@ photon:
     package:
       open-vm-tools:
       cloud-utils:
-      python3-netifaces:
     os_version:
       - distro_version: "3.0"
         package:
@@ -825,7 +823,6 @@ tkg:
       zlib:
       filesystem:
       ethtool:
-      pkg-config:
       bash:
       bzip2:
       shadow:
@@ -865,7 +862,6 @@ tkg:
       iputils:
       bindutils:
       diffutils:
-      bridge-utils:
       cri-tools:
       apparmor-utils:
       apparmor-profiles:
@@ -874,7 +870,7 @@ tkg:
       tzdata:
       motd:
       sudo:
-      iotop:
+      iotop-c:
       lsof:
       traceroute:
       ltrace:
