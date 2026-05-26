@@ -23,11 +23,10 @@ SHELL ["/bin/bash", "-c"]
 
 RUN tdnf -y update --refresh
 
-# Pinning the version to overcome SSH Proxy issue
-RUN tdnf -y --enablerepo=photon install openssh-clients-9.3p2-17.ph5
+RUN tdnf -y install python3-3.11.15-1.1.ph5 python3-pip-24.3.1-5.ph5 --enablerepo=photon --disablerepo=photon-updates
 
 # Install required packages
-RUN for package in unzip git wget build-essential python3-pip jq coreutils xorriso grep ; do tdnf -y install "$package" --refresh; done
+RUN for package in openssh-clients unzip git wget build-essential jq coreutils xorriso grep ; do tdnf -y install "$package" --refresh; done
 
 # Install Semver, jinja, and Windows Remote Management
 RUN pip3 install --index-url "${PIP_INDEX_URL}" semver jinja2 jinja2-time pywinrm
