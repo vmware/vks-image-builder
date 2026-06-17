@@ -769,16 +769,7 @@ tkg:
         mode: "0600"
         filetype: file
         contains:
-      "/etc/modprobe.d/dirty-frag.conf":
-        exists: true
-        filetype: file
-        contains:
-          - "blacklist esp4"
-          - "install esp4 /bin/false"
-          - "blacklist esp6"
-          - "install esp6 /bin/false"
-          - "blacklist rxrpc"
-          - "install rxrpc /bin/false"
+      # IDR (VKD-20018): dirty-frag.conf check removed — module blocklist no longer deployed.
   photon:
     package:
       glibc:
@@ -993,15 +984,7 @@ tkg:
         exists: true
         filetype: file
         contains:
-      "/etc/modprobe.d/dirty-frag.conf":
-        exists: true
-        filetype: file
-        contains:
-          - "blacklist esp4"
-          - "install esp4 /bin/false"
-          - "blacklist esp6"
-          - "install esp6 /bin/false"
-          - "blacklist rxrpc"
-          - "install rxrpc /bin/false"
+      # IDR (VKD-20018): dirty-frag.conf check removed — Photon was not affected by
+      # Dirty Fragment or Fragnesia CVEs; this check was incorrectly included.
   windows:
     files:

@@ -208,11 +208,10 @@
     mode: 0644
   ignore_errors: true
 
-- name: Blacklist vulnerable networking modules (esp4, esp6, rxrpc)
-  template:
-    src: "etc/modprobe.d/dirty-frag.conf"
-    dest: "/etc/modprobe.d/dirty-frag.conf"
-    mode: 0644
+# IDR (VKD-20018): dirty-frag.conf removed. The esp4/esp6/rxrpc module blacklist
+# for Dirty Fragment (CVE-2026-43284, CVE-2026-43500) and Fragnesia (CVE-2026-46300)
+# is no longer required — upstream kernel patches are now present in the deployed
+# Ubuntu base images. Photon was not affected by these CVEs.
 
 - name: Update initramfs
   command: "{{ systemd_networkd_update_initramfs }}"
