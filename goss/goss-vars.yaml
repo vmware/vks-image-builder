@@ -788,16 +788,7 @@ tkg:
         exists: true
         filetype: file
         contains:
-      "/etc/modprobe.d/dirty-frag.conf":
-        exists: true
-        filetype: file
-        contains:
-          - "blacklist esp4"
-          - "install esp4 /bin/false"
-          - "blacklist esp6"
-          - "install esp6 /bin/false"
-          - "blacklist rxrpc"
-          - "install rxrpc /bin/false"
+      # IDR (VKD-20018): dirty-frag.conf check removed — module blocklist no longer deployed.
     stig:
       package:
         aide:
@@ -1040,16 +1031,8 @@ tkg:
           - "install hfsplus /bin/false"
           - "install squashfs /bin/false"
           - "install udf /bin/false"
-      "/etc/modprobe.d/dirty-frag.conf":
-        exists: true
-        filetype: file
-        contains:
-          - "blacklist esp4"
-          - "install esp4 /bin/false"
-          - "blacklist esp6"
-          - "install esp6 /bin/false"
-          - "blacklist rxrpc"
-          - "install rxrpc /bin/false"
+      # IDR (VKD-20018): dirty-frag.conf check removed — Photon was not affected by
+      # Dirty Fragment or Fragnesia CVEs; this check was incorrectly included.
       "/etc/yum.repos.d/artifactory-photon-5.repo":
         exists: false
         filetype: file
