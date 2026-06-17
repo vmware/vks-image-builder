@@ -711,9 +711,6 @@ tkg:
       systemctl show kubelet.service -p After | grep -q chrony-wait.service:
         exit-status: 0
         timeout: 0
-      systemctl show kubelet.service -p Requires | grep -q chrony-wait.service:
-        exit-status: 0
-        timeout: 0
     service:
       systemd-timesyncd.service:
         enabled: false
@@ -767,6 +764,13 @@ tkg:
         exists: true
         filetype: file
         contains:
+          - "chronyc waitsync"
+          - "RemainAfterExit=yes"
+      "/usr/lib/systemd/system/kubelet.service":
+        exists: true
+        filetype: file
+        contains:
+          - "After=network-online.target chrony-wait.service"
       "/usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf":
         exists: true
         mode: "0600"
@@ -943,9 +947,6 @@ tkg:
       systemctl show kubelet.service -p After | grep -q chrony-wait.service:
         exit-status: 0
         timeout: 0
-      systemctl show kubelet.service -p Requires | grep -q chrony-wait.service:
-        exit-status: 0
-        timeout: 0
     service:
       sshd.service:
         enabled: true
@@ -1004,6 +1005,13 @@ tkg:
         exists: true
         filetype: file
         contains:
+          - "chronyc waitsync"
+          - "RemainAfterExit=yes"
+      "/usr/lib/systemd/system/kubelet.service":
+        exists: true
+        filetype: file
+        contains:
+          - "After=network-online.target chrony-wait.service"
       "/usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf":
         exists: true
         mode: "0600"
