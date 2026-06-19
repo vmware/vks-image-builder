@@ -85,6 +85,7 @@ common_photon_rpms: &common_photon_rpms
   net-tools:
   openssl-c_rehash:
   python3-pip:
+  haveged:
   socat:
   tar:
   libarchive:
@@ -851,7 +852,6 @@ tkg:
       gdbm:
       photon-release:
       photon-repos:
-      haveged:
       sed:
       grep:
       cpio:
