@@ -2,8 +2,8 @@
 # The term “Broadcom” refers to Broadcom Inc. and/or its subsidiaries.
 # SPDX-License-Identifier: MPL-2.0
 ---
-tdnf_updatenumber: 879
-deprecated_packages_update879:
+tdnf_updatenumber: 913
+deprecated_packages_update913:
   - bridge-utils
   - python3-netifaces
   - rng-tools
