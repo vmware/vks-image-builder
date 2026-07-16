@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MPL-2.0
 ---
 tdnf_updatenumber: 923
-deprecated_packages_update923:
+deprecated_packages_update:
   - bridge-utils
   - python3-netifaces
   - rng-tools
