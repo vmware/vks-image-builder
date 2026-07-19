@@ -208,7 +208,7 @@
     mode: 0644
   ignore_errors: true
 
-# IDR (VKD-20018): dirty-frag.conf removed. The esp4/esp6/rxrpc module blacklist
+# IDR: dirty-frag.conf removed. The esp4/esp6/rxrpc module blacklist
 # for Dirty Fragment (CVE-2026-43284, CVE-2026-43500) and Fragnesia (CVE-2026-46300)
 # is no longer required — upstream kernel patches are now present in the deployed
 # Ubuntu base images. Photon was not affected by these CVEs.
@@ -224,3 +224,18 @@
     owner: root
     group: root
     mode: 0644
+
+# IDR: tuned v2.24+ changed the default profile lookup path from
+# /etc/tuned to /etc/tuned/profiles, breaking machine-agent-written profiles
+# and the builtin-vks profile (both still placed in /etc/tuned). Downgrading
+# tuned is not an option.
+- name: Remove any pre-existing profile_dirs entry from tuned-main.conf
+  ansible.builtin.lineinfile:
+    path: /etc/tuned/tuned-main.conf
+    regexp: '^profile_dirs'
+    state: absent
+
+- name: Configure tuned profile_dirs for tuned v2.24+ compatibility 
+  ansible.builtin.lineinfile:
+    path: /etc/tuned/tuned-main.conf
+    line: "profile_dirs = /usr/lib/tuned/profiles,/usr/lib/tuned,/etc/tuned/profiles,/etc/tuned"

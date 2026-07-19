@@ -746,6 +746,15 @@ tkg:
       kernel-param:
       common-files:
     files:
+      # IDR: tuned v2.24+ changed profile lookup from /etc/tuned to
+      # /etc/tuned/profiles, breaking machine-agent-written profiles.
+      # tuned-main.conf is patched during bake to set profile_dirs to include
+      # both locations. This check asserts the patch was applied.
+      "/etc/tuned/tuned-main.conf":
+        exists: true
+        filetype: file
+        contains:
+          - "profile_dirs = /usr/lib/tuned/profiles,/usr/lib/tuned,/etc/tuned/profiles,/etc/tuned"
       "/etc/systemd/journald.conf":
         exists: true
         filetype: file
@@ -787,7 +796,7 @@ tkg:
         exists: true
         filetype: file
         contains:
-      # IDR (VKD-20018): dirty-frag.conf check removed — module blocklist no longer deployed.
+      # IDR: dirty-frag.conf check removed — module blocklist no longer deployed.
     stig:
       package:
         aide:
@@ -975,6 +984,15 @@ tkg:
         grub2:
       files:
     files:
+      # IDR: tuned v2.24+ changed profile lookup from /etc/tuned to
+      # /etc/tuned/profiles, breaking machine-agent-written profiles.
+      # tuned-main.conf is patched during bake to set profile_dirs to include
+      # both locations. This check asserts the patch was applied.
+      "/etc/tuned/tuned-main.conf":
+        exists: true
+        filetype: file
+        contains:
+          - "profile_dirs = /usr/lib/tuned/profiles,/usr/lib/tuned,/etc/tuned/profiles,/etc/tuned"
       "/etc/systemd/journald.conf":
         exists: true
         filetype: file
@@ -1027,7 +1045,7 @@ tkg:
           - "install hfsplus /bin/false"
           - "install squashfs /bin/false"
           - "install udf /bin/false"
-      # IDR (VKD-20018): dirty-frag.conf check removed — Photon was not affected by
+      # IDR: dirty-frag.conf check removed — Photon was not affected by
       # Dirty Fragment or Fragnesia CVEs; this check was incorrectly included.
       "/etc/yum.repos.d/artifactory-photon-5.repo":
         exists: false
