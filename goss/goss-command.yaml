@@ -79,6 +79,12 @@ command:
     stdout:
       - '!Banner'
       - '!KexAlgorithms'
+  findmnt -no OPTIONS /tmp:
+    exit-status: 0
+    stdout:
+      - noexec
+    stderr: []
+    timeout: 0
 {{end}}
 {{range $name, $vers := index .Vars .Vars.OS .Vars.PROVIDER "command"}}
   {{ $name }}:
