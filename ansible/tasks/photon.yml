@@ -83,3 +83,22 @@
     enabled: true
     state: restarted
   when: timer_override_file.changed
+
+- name: Enable noexec on /tmp mount
+  tags: [tmp-noexec]
+  when: run_tmp_noexec | bool
+  block:
+    - name: Check current /tmp mount options
+      ansible.builtin.command: findmnt -no OPTIONS --target /tmp
+      register: tmp_mount_options
+      failed_when: false
+      changed_when: false
+
+    - name: Add noexec to /tmp mount options
+      ansible.posix.mount:
+        path: /tmp
+        src: tmpfs
+        fstype: tmpfs
+        opts: defaults,noexec,nosuid,nodev
+        state: mounted
+      when: tmp_mount_options.rc != 0 or 'noexec' not in tmp_mount_options.stdout

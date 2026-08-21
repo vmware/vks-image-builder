@@ -66,6 +66,12 @@
   ansible.builtin.command: tdnf clean all && tdnf makecache
   changed_when: false
 
+- name: Remove packages deprecated and disabled in latest photon snapshot
+  ansible.builtin.command: tdnf remove -y "{{ item }}"
+  with_items: "{{ deprecated_packages_update }}"
+  changed_when: false
+  ignore_errors: true
+
 - name: Exclude packages from upgrade
   ansible.builtin.lineinfile:
     path: /etc/tdnf/tdnf.conf
