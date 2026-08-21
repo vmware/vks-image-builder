@@ -121,6 +121,13 @@ command:
     {{$key}}: {{$val}}
   {{end}}
   {{end}}
+  {{ range $name, $vers := index $component "not-installed-package"}}
+  {{$name}}:
+    installed: false
+  {{range $key, $val := $vers}}
+    {{$key}}: {{$val}}
+  {{end}}
+  {{end}}
 {{end}}
 {{end}}
 {{end}}

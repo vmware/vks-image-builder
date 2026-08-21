@@ -1,0 +1,29 @@
+diff --git a/images/capi/ansible/roles/kubernetes/templates/usr/lib/systemd/system/kubelet.service b/images/capi/ansible/roles/kubernetes/templates/usr/lib/systemd/system/kubelet.service
+index 28ab711..87c19c7 100644
+--- a/images/capi/ansible/roles/kubernetes/templates/usr/lib/systemd/system/kubelet.service
++++ b/images/capi/ansible/roles/kubernetes/templates/usr/lib/systemd/system/kubelet.service
+@@ -2,7 +2,23 @@
+ Description=kubelet: The Kubernetes Node Agent
+ Documentation=https://kubernetes.io/docs/home/
++# IDR: chrony-wait.service is intentionally NOT in Wants= here.
++#
++# Wants= causes systemd to re-activate the dependency in every new start
++# transaction. When NTP is unreachable, chrony-wait enters the "failed" state
++# after its 3-minute TimeoutStartSec. Any subsequent "systemctl restart kubelet"
++# (e.g. by machineadm during config reconciliation) creates a new transaction,
++# which re-evaluates Wants=, re-activates the already-failed chrony-wait, waits
++# another 3 minutes, and repeats — creating a restart cycle.
++#
++# Removing chrony-wait from Wants= breaks the cycle:
++# - Boot: chrony-wait is started independently by multi-user.target
++#   (WantedBy=multi-user.target in chrony-wait.service). After= ensures
++#   kubelet starts after chrony-wait in that boot transaction.
++# - Post-boot restarts (machineadm, kubelet Restart=always): chrony-wait is
++#   already in a terminal state (active or failed). After= is satisfied
++#   immediately; chrony-wait is not re-triggered.
+ Wants=network-online.target
+-After=network-online.target
++After=network-online.target chrony-wait.service
+ 
+ [Service]
+ ExecStart={{ sysusr_prefix }}/bin/kubelet

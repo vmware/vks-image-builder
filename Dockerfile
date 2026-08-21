@@ -10,6 +10,8 @@ ARG ANSIBLE_VERSION=2.15.13
 ARG IMAGE_BUILDER_REPO="https://github.com/kubernetes-sigs/image-builder.git"
 ARG IMAGE_BUILDER_REPO_NAME=image-builder
 ARG PACKER_GITHUB_API_TOKEN=""
+# Set PIP_INDEX_URL default value to public PyPI URL.
+ARG PIP_INDEX_URL=https://pypi.org/simple
 
 ARG WINDOWS_ADMIN_PASSWORD
 ENV WINDOWS_ADMIN_PASSWORD="${WINDOWS_ADMIN_PASSWORD}"
@@ -19,17 +21,15 @@ ENV LANG=en_US.UTF-8
 
 SHELL ["/bin/bash", "-c"]
 
-RUN tdnf -y update
-RUN tdnf -y upgrade
+RUN tdnf -y update --refresh
+
+RUN tdnf -y install python3-3.11.15-1.1.ph5 python3-pip-24.3.1-5.ph5 --enablerepo=photon --disablerepo=photon-updates
 
 # Install required packages
-RUN for package in unzip git wget build-essential python3-pip jq coreutils openssh-server xorriso grep ; do tdnf -y install "$package" --refresh; done
+RUN for package in openssh-clients unzip git wget build-essential jq coreutils xorriso grep ; do tdnf -y install "$package" --refresh; done
 
-# Install Semver
-RUN pip3 install semver jinja2 jinja2-time
-
-# Install Windows Remote Management 
-RUN pip3 install pywinrm
+# Install Semver, jinja, and Windows Remote Management
+RUN pip3 install --index-url "${PIP_INDEX_URL}" semver jinja2 jinja2-time pywinrm
 
 # Setup image Builder code
 RUN git clone $IMAGE_BUILDER_REPO $IMAGE_BUILDER_REPO_NAME
@@ -38,7 +38,7 @@ WORKDIR $IMAGE_BUILDER_REPO_NAME
 RUN git checkout $IMAGE_BUILDER_COMMIT_ID
 
 # Install Ansible
-RUN pip3 install ansible-core==$ANSIBLE_VERSION
+RUN pip3 install --index-url "${PIP_INDEX_URL}" "ansible-core==${ANSIBLE_VERSION}"
 # Set the environment variable where packer will be installed
 ENV PATH=${PATH}:/image-builder/images/capi/.local/bin
 
@@ -49,6 +49,8 @@ WORKDIR images/capi
 ENV LANG=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
 
+# Fix the packer plugin installation failure
+RUN sed -i 's|github.com/hashicorp/vsphere|github.com/vmware/vsphere|' packer/ova/config.pkr.hcl
 RUN make deps-ova
 
 # Make sure packer and ansible are installed properly

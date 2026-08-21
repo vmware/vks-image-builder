@@ -1,0 +1,24 @@
+From 9e85a5c846113b713d4711ee41e08e8d134dc37f Mon Sep 17 00:00:00 2001
+From: Matt Boersma <Matt.Boersma@microsoft.com>
+Date: Mon, 3 Nov 2025 10:36:16 -0700
+Subject: [PATCH] Remove --pod-infra-container-image default argument
+
+---
+ images/capi/ansible/roles/kubernetes/defaults/main.yml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/images/capi/ansible/roles/kubernetes/defaults/main.yml b/images/capi/ansible/roles/kubernetes/defaults/main.yml
+index 8ae5473a0..6cf40cf14 100644
+--- a/images/capi/ansible/roles/kubernetes/defaults/main.yml
++++ b/images/capi/ansible/roles/kubernetes/defaults/main.yml
+@@ -43,6 +43,6 @@ kubernetes_cni_http_checksum: sha256:{{ kubernetes_cni_http_source }}/{{ kuberne
+ 
+ kubeadm_template: etc/kubeadm.yml
+ 
+-kubelet_extra_args: --pod-infra-container-image={{ pause_image }}
++kubelet_extra_args: ""
+ 
+ kubernetes_enable_automatic_resource_sizing: false
+-- 
+2.51.2
+
