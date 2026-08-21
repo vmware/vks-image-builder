@@ -1,0 +1,12 @@
+diff --git a/images/capi/ansible/roles/providers/tasks/vmware-photon.yml b/images/capi/ansible/roles/providers/tasks/vmware-photon.yml
+--- a/images/capi/ansible/roles/providers/tasks/vmware-photon.yml
++++ b/images/capi/ansible/roles/providers/tasks/vmware-photon.yml
+@@ -16,7 +16,7 @@
+ - name: Install cloud-init and tools for VMware Photon OS
+   ansible.builtin.command: tdnf install {{ packages }} -y
+   vars:
+-    packages: cloud-init cloud-utils python3-netifaces
++    packages: cloud-init cloud-utils
+
+ - name: Remove cloud-init /etc/cloud/cloud.cfg.d/99-disable-networking-config.cfg
+   ansible.builtin.file:

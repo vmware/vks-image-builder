@@ -43,6 +43,50 @@ function download_configuration_files() {
     wget -q http://${HOST_IP}:${ARTIFACTS_CONTAINER_PORT}/artifacts/metadata/vmware-system.kr.override-semver-constraint.json || echo "override-semver-constraint.json don't exist"
 }
 
+# Modify user data to pin kernel to given version for Ubuntu OS
+function modify_user_data() {
+    local os_folder_name=""
+    if [[ "${OS_TARGET}" == "ubuntu-2404-efi" ]]; then
+       os_folder_name="24.04.efi"
+    elif [[ "${OS_TARGET}" == "ubuntu-2204-efi" ]]; then
+       os_folder_name="22.04.efi"
+    else 
+       return 0 # OS_TARGET is other than ubuntu22. Skipping the userdata modification.
+    fi
+    if [[ -z "${INTERNAL_REPO_URL}" ]]; then
+           echo "Warning: Internal Repositories are not set. Using default Ubuntu apt repository."
+           return 0
+    fi
+    local user_data_file="/image-builder/images/capi/packer/ova/linux/ubuntu/http/${os_folder_name}/user-data.tmpl"
+    if [[ ! -f "${user_data_file}" ]]; then exit 1; fi
+
+    # Use heredoc to define the multi-line string
+    local apt_section_yaml=$(cat <<EOF
+  apt:
+      preserve_sources_list: false
+      fallback: offline-install
+      disable_suites: []
+      primary:
+        - arches: [ amd64 ]
+          uri: ${INTERNAL_REPO_URL}
+      security:
+        - arches: [ amd64 ]
+          uri: ${INTERNAL_REPO_URL}
+      updates:
+        - arches: [ amd64 ]
+          uri: ${INTERNAL_REPO_URL}
+      backports:
+        - arches: [ amd64 ]
+          uri: ${INTERNAL_REPO_URL}
+EOF
+)
+    sed -i "/^autoinstall:/r /dev/stdin" "${user_data_file}" <<< "${apt_section_yaml}"
+    sed -i 's/updates: "all"/updates: "security"/' "${user_data_file}"
+    echo "INFO: User-data template modified successfully. Final Content:"
+    cat "${user_data_file}"
+    return 0
+}
+
 # Generate packaer input variables based on packer-variables folder
 function generate_packager_configuration() {
     mkdir -p $ova_destination_folder

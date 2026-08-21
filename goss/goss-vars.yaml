@@ -85,10 +85,10 @@ common_photon_rpms: &common_photon_rpms
   net-tools:
   openssl-c_rehash:
   python3-pip:
-  rng-tools:
+  haveged:
   socat:
   tar:
-  unzip:
+  libarchive:
 
 photon_3_rpms: &photon_3_rpms
   python-netifaces:
@@ -229,7 +229,6 @@ photon:
     package:
       open-vm-tools:
       cloud-utils:
-      python3-netifaces:
     os_version:
       - distro_version: "3.0"
         package:
@@ -703,6 +702,9 @@ tkg:
         stdout: []
         stderr: []
         timeout: 0
+      systemctl show kubelet.service -p After | grep -q chrony-wait.service:
+        exit-status: 0
+        timeout: 0
     service:
       systemd-timesyncd.service:
         enabled: false
@@ -711,6 +713,9 @@ tkg:
         enabled: true
         running: true
       cishardening.service:
+        enabled: true
+        running: false
+      chrony-wait.service:
         enabled: true
         running: false
     kernel-param:
@@ -722,6 +727,8 @@ tkg:
         - distro_version: "24.04"
           package:
             dkms:
+          not-installed-package:
+            telnet:
           service:
             lxd-installer.socket:
               enabled: false
@@ -745,18 +752,29 @@ tkg:
         exists: true
         filetype: file
         contains:
+      "/etc/systemd/system/chrony-wait.service":
+        exists: true
+        filetype: file
+        contains:
+          - "chronyc waitsync"
+          - "RemainAfterExit=yes"
+      "/usr/lib/systemd/system/kubelet.service":
+        exists: true
+        filetype: file
+        contains:
+          - "After=network-online.target chrony-wait.service"
       "/usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf":
         exists: true
         mode: "0600"
         filetype: file
         contains:
+      # IDR (VKD-20018): dirty-frag.conf check removed — module blocklist no longer deployed.
   photon:
     package:
       glibc:
       zlib:
       filesystem:
       ethtool:
-      pkg-config:
       bash:
       bzip2:
       shadow:
@@ -785,7 +803,6 @@ tkg:
       gdbm:
       photon-release:
       photon-repos:
-      haveged:
       sed:
       grep:
       cpio:
@@ -796,7 +813,6 @@ tkg:
       iputils:
       bindutils:
       diffutils:
-      bridge-utils:
       cri-tools:
       apparmor-utils:
       apparmor-profiles:
@@ -805,7 +821,7 @@ tkg:
       tzdata:
       motd:
       sudo:
-      iotop:
+      iotop-c:
       lsof:
       traceroute:
       ltrace:
@@ -862,6 +878,9 @@ tkg:
         stdout: []
         stderr: []
         timeout: 0
+      systemctl show kubelet.service -p After | grep -q chrony-wait.service:
+        exit-status: 0
+        timeout: 0
     service:
       sshd.service:
         enabled: true
@@ -876,6 +895,9 @@ tkg:
         enabled: true
         running: true
       cishardening.service:
+        enabled: true
+        running: false
+      chrony-wait.service:
         enabled: true
         running: false
       tdnf-cache-updateinfo.timer:
@@ -907,6 +929,17 @@ tkg:
         exists: true
         filetype: file
         contains:
+      "/etc/systemd/system/chrony-wait.service":
+        exists: true
+        filetype: file
+        contains:
+          - "chronyc waitsync"
+          - "RemainAfterExit=yes"
+      "/usr/lib/systemd/system/kubelet.service":
+        exists: true
+        filetype: file
+        contains:
+          - "After=network-online.target chrony-wait.service"
       "/usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf":
         exists: true
         mode: "0600"
@@ -947,5 +980,7 @@ tkg:
         exists: true
         filetype: file
         contains:
+      # IDR (VKD-20018): dirty-frag.conf check removed — Photon was not affected by
+      # Dirty Fragment or Fragnesia CVEs; this check was incorrectly included.
   windows:
     files:

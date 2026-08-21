@@ -23,3 +23,4 @@ systemd_networkd_update_initramfs: >-
 enable_ubuntu_hwe: "False"
 journald_system_max_use: 2G
 enable_garp_notify_all: true
+run_tmp_noexec: true
