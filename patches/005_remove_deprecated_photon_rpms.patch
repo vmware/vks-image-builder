@@ -1,0 +1,12 @@
+diff --git a/images/capi/ansible/roles/node/defaults/main.yml b/images/capi/ansible/roles/node/defaults/main.yml
+--- a/images/capi/ansible/roles/node/defaults/main.yml
++++ b/images/capi/ansible/roles/node/defaults/main.yml
+@@ -74,8 +74,6 @@
+   - openssl-c_rehash
+   - python3-pygobject
+   - python3-pip
+-  - rng-tools
+   - socat
+   - tar
+-  - unzip
+   - curl

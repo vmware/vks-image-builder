@@ -78,6 +78,18 @@
     enabled: true
     state: restarted
 
+- name: Copy chrony-wait systemd unit
+  copy:
+    src: files/etc/systemd/system/chrony-wait.service
+    dest: /etc/systemd/system/chrony-wait.service
+    mode: 0644
+
+- name: Enable chrony-wait service
+  systemd:
+    name: chrony-wait.service
+    daemon_reload: yes
+    enabled: true
+
 # TODO(KK) Investigate difference between upstream yaml and this
 - name: Configure /etc/crictl.yaml
   copy:
@@ -196,6 +208,11 @@
     mode: 0644
   ignore_errors: true
 
+# IDR: dirty-frag.conf removed. The esp4/esp6/rxrpc module blacklist
+# for Dirty Fragment (CVE-2026-43284, CVE-2026-43500) and Fragnesia (CVE-2026-46300)
+# is no longer required — upstream kernel patches are now present in the deployed
+# Ubuntu base images. Photon was not affected by these CVEs.
+
 - name: Update initramfs
   command: "{{ systemd_networkd_update_initramfs }}"
   when: (systemd_networkd_update_initramfs is defined) and (systemd_networkd_update_initramfs | length > 0)
@@ -207,3 +224,18 @@
     owner: root
     group: root
     mode: 0644
+
+# IDR: tuned v2.24+ changed the default profile lookup path from
+# /etc/tuned to /etc/tuned/profiles, breaking machine-agent-written profiles
+# and the builtin-vks profile (both still placed in /etc/tuned). Downgrading
+# tuned is not an option.
+- name: Remove any pre-existing profile_dirs entry from tuned-main.conf
+  ansible.builtin.lineinfile:
+    path: /etc/tuned/tuned-main.conf
+    regexp: '^profile_dirs'
+    state: absent
+
+- name: Configure tuned profile_dirs for tuned v2.24+ compatibility 
+  ansible.builtin.lineinfile:
+    path: /etc/tuned/tuned-main.conf
+    line: "profile_dirs = /usr/lib/tuned/profiles,/usr/lib/tuned,/etc/tuned/profiles,/etc/tuned"

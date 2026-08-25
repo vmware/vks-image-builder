@@ -85,10 +85,10 @@ common_photon_rpms: &common_photon_rpms
   net-tools:
   openssl-c_rehash:
   python3-pip:
-  rng-tools:
+  haveged:
   socat:
   tar:
-  unzip:
+  libarchive:
 
 photon_3_rpms: &photon_3_rpms
   python-netifaces:
@@ -229,7 +229,6 @@ photon:
     package:
       open-vm-tools:
       cloud-utils:
-      python3-netifaces:
     os_version:
       - distro_version: "3.0"
         package:
@@ -708,6 +707,9 @@ tkg:
         timeout: 0
       "nft --version":
         exit-status: 0
+      systemctl show kubelet.service -p After | grep -q chrony-wait.service:
+        exit-status: 0
+        timeout: 0
     service:
       systemd-timesyncd.service:
         enabled: false
@@ -716,6 +718,9 @@ tkg:
         enabled: true
         running: true
       cishardening.service:
+        enabled: true
+        running: false
+      chrony-wait.service:
         enabled: true
         running: false
       tuned.service:
@@ -729,6 +734,8 @@ tkg:
         - distro_version: "24.04"
           package:
             dkms:
+          not-installed-package:
+            telnet:
           service:
             lxd-installer.socket:
               enabled: false
@@ -739,6 +746,15 @@ tkg:
       kernel-param:
       common-files:
     files:
+      # IDR: tuned v2.24+ changed profile lookup from /etc/tuned to
+      # /etc/tuned/profiles, breaking machine-agent-written profiles.
+      # tuned-main.conf is patched during bake to set profile_dirs to include
+      # both locations. This check asserts the patch was applied.
+      "/etc/tuned/tuned-main.conf":
+        exists: true
+        filetype: file
+        contains:
+          - "profile_dirs = /usr/lib/tuned/profiles,/usr/lib/tuned,/etc/tuned/profiles,/etc/tuned"
       "/etc/systemd/journald.conf":
         exists: true
         filetype: file
@@ -752,6 +768,17 @@ tkg:
         exists: true
         filetype: file
         contains:
+      "/etc/systemd/system/chrony-wait.service":
+        exists: true
+        filetype: file
+        contains:
+          - "chronyc waitsync"
+          - "RemainAfterExit=yes"
+      "/usr/lib/systemd/system/kubelet.service":
+        exists: true
+        filetype: file
+        contains:
+          - "After=network-online.target chrony-wait.service"
       "/usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf":
         exists: true
         mode: "0600"
@@ -769,6 +796,7 @@ tkg:
         exists: true
         filetype: file
         contains:
+      # IDR: dirty-frag.conf check removed — module blocklist no longer deployed.
     stig:
       package:
         aide:
@@ -805,7 +833,6 @@ tkg:
       zlib:
       filesystem:
       ethtool:
-      pkg-config:
       bash:
       bzip2:
       shadow:
@@ -834,7 +861,6 @@ tkg:
       gdbm:
       photon-release:
       photon-repos:
-      haveged:
       sed:
       grep:
       cpio:
@@ -845,7 +871,6 @@ tkg:
       iputils:
       bindutils:
       diffutils:
-      bridge-utils:
       cri-tools:
       apparmor-utils:
       apparmor-profiles:
@@ -854,7 +879,7 @@ tkg:
       tzdata:
       motd:
       sudo:
-      iotop:
+      iotop-c:
       lsof:
       traceroute:
       ltrace:
@@ -915,6 +940,9 @@ tkg:
         timeout: 0
       "nft --version":
         exit-status: 0
+      systemctl show kubelet.service -p After | grep -q chrony-wait.service:
+        exit-status: 0
+        timeout: 0
     service:
       sshd.service:
         enabled: true
@@ -929,6 +957,9 @@ tkg:
         enabled: true
         running: true
       cishardening.service:
+        enabled: true
+        running: false
+      chrony-wait.service:
         enabled: true
         running: false
       tuned.service:
@@ -953,6 +984,15 @@ tkg:
         grub2:
       files:
     files:
+      # IDR: tuned v2.24+ changed profile lookup from /etc/tuned to
+      # /etc/tuned/profiles, breaking machine-agent-written profiles.
+      # tuned-main.conf is patched during bake to set profile_dirs to include
+      # both locations. This check asserts the patch was applied.
+      "/etc/tuned/tuned-main.conf":
+        exists: true
+        filetype: file
+        contains:
+          - "profile_dirs = /usr/lib/tuned/profiles,/usr/lib/tuned,/etc/tuned/profiles,/etc/tuned"
       "/etc/systemd/journald.conf":
         exists: true
         filetype: file
@@ -966,6 +1006,17 @@ tkg:
         exists: true
         filetype: file
         contains:
+      "/etc/systemd/system/chrony-wait.service":
+        exists: true
+        filetype: file
+        contains:
+          - "chronyc waitsync"
+          - "RemainAfterExit=yes"
+      "/usr/lib/systemd/system/kubelet.service":
+        exists: true
+        filetype: file
+        contains:
+          - "After=network-online.target chrony-wait.service"
       "/usr/lib/systemd/system/kubelet.service.d/10-kubeadm.conf":
         exists: true
         mode: "0600"
@@ -994,6 +1045,8 @@ tkg:
           - "install hfsplus /bin/false"
           - "install squashfs /bin/false"
           - "install udf /bin/false"
+      # IDR: dirty-frag.conf check removed — Photon was not affected by
+      # Dirty Fragment or Fragnesia CVEs; this check was incorrectly included.
       "/etc/yum.repos.d/artifactory-photon-5.repo":
         exists: false
         filetype: file

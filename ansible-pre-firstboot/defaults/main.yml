@@ -1,0 +1,15 @@
+# © Broadcom. All Rights Reserved.
+# The term “Broadcom” refers to Broadcom Inc. and/or its subsidiaries.
+# SPDX-License-Identifier: MPL-2.0
+---
+tdnf_updatenumber: 932
+deprecated_packages_update:
+  - bridge-utils
+  - python3-netifaces
+  - rng-tools
+  - unzip
+  - iotop
+  - dhcp
+  - dhcp-client
+  - dhcp-libs
+  - dhcp-server

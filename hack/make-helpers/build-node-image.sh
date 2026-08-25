@@ -78,6 +78,7 @@ function build_node_image() {
         $(get_node_image_builder_container_labels "$KUBERNETES_VERSION" "$OS_TARGET") \
         -v $ROOT/ansible:/image-builder/images/capi/image/ansible \
         -v $ROOT/ansible-finalize:/image-builder/images/capi/image/ansible-finalize \
+        -v $ROOT/ansible-pre-firstboot:/image-builder/images/capi/image/ansible-pre-firstboot \
         -v $ROOT/ansible-windows:/image-builder/images/capi/image/ansible-windows \
         -v $ROOT/goss:/image-builder/images/capi/image/goss \
         -v $ROOT/hack:/image-builder/images/capi/image/hack \
@@ -90,7 +91,7 @@ function build_node_image() {
         ${INCONTAINER_OVERRIDE_REPO_ENV} \
         ${AUTO_UNATTEND_ANSWER_FILE_BIND} \
         -w /image-builder/images/capi/ \
-        -e HOST_IP=$HOST_IP -e ARTIFACTS_CONTAINER_PORT=$ARTIFACTS_CONTAINER_PORT -e OS_TARGET=$OS_TARGET -e PRIMARY_INTERNAL_REPO_URL="$PRIMARY_INTERNAL_REPO_URL" -e SECURITY_INTERNAL_REPO_URL="$SECURITY_INTERNAL_REPO_URL" -e UPDATE_INTERNAL_REPO_URL="$UPDATE_INTERNAL_REPO_URL" \
+        -e HOST_IP=$HOST_IP -e ARTIFACTS_CONTAINER_PORT=$ARTIFACTS_CONTAINER_PORT -e OS_TARGET=$OS_TARGET -e INTERNAL_REPO_URL="$INTERNAL_REPO_URL" \
         -e TKR_SUFFIX=$TKR_SUFFIX -e KUBERNETES_VERSION=$KUBERNETES_VERSION \
         -e PACKER_HTTP_PORT=$PACKER_HTTP_PORT \
         -e WINDOWS_ADMIN_PASSWORD="$WINDOWS_ADMIN_PASSWORD" \

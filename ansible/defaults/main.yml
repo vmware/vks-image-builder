@@ -36,3 +36,4 @@ ubuntu_stig_debs:
   - libnss-sss
 photon_stig_rpms:
   - grub2
+run_tmp_noexec: true

@@ -1,0 +1,79 @@
+# © Broadcom. All Rights Reserved.
+# The term "Broadcom" refers to Broadcom Inc. and/or its subsidiaries.
+# SPDX-License-Identifier: MPL-2.0
+---
+# tdnf update photon-repos uses existing .repo URLs first; packages.vmware.com repodata 404s—rewrite host, then update.
+- name: Rewrite packages.vmware.com to packages.broadcom.com in /etc/yum.repos.d
+  ansible.builtin.shell: |
+    set -eo pipefail
+    shopt -s nullglob
+    for f in /etc/yum.repos.d/*.repo; do
+      sed -i 's|packages\.vmware\.com|packages.broadcom.com|g' "$f"
+    done
+  args:
+    executable: /bin/bash
+  changed_when: false
+
+- name: Update photon-repos to get repo configs pointing to packages.broadcom.com
+  ansible.builtin.command: tdnf update -y photon-repos --refresh
+  register: repos_update
+  changed_when: '"Nothing to do" not in repos_update.stderr'
+
+- name: Find all repo files
+  ansible.builtin.find:
+    paths: /etc/yum.repos.d
+    patterns: "*.repo"
+  register: repo_files
+
+- name: Disable all repos except photon
+  ansible.builtin.lineinfile:
+    path: "{{ item.path }}"
+    regexp: "^enabled="
+    line: "enabled=0"
+  when: item.path != '/etc/yum.repos.d/photon.repo'
+  loop: "{{ repo_files.files }}"
+
+- name: Ensure photon repo is enabled
+  ansible.builtin.lineinfile:
+    path: /etc/yum.repos.d/photon.repo
+    regexp: "^enabled="
+    line: "enabled=1"
+
+- name: Install tdnf 3.5.15 to support snapshot URLs
+  ansible.builtin.command: tdnf install -y tdnf-3.5.15-1.ph5 --refresh --enablerepo=photon
+  register: tdnf_update
+  changed_when: '"Nothing to do" not in tdnf_update.stderr'
+
+- name: Create tdnf vars directory
+  ansible.builtin.file:
+    path: /etc/tdnf/vars
+    state: directory
+    mode: "0755"
+
+- name: Create tdnf variable file for updatenumber
+  ansible.builtin.copy:
+    content: "{{ tdnf_updatenumber }}"
+    dest: /etc/tdnf/vars/updatenumber
+    mode: "0644"
+
+- name: Add snapshot URL to photon.repo
+  ansible.builtin.lineinfile:
+    path: /etc/yum.repos.d/photon.repo
+    insertafter: "^baseurl="
+    line: "snapshot=https://packages.broadcom.com/photon/$releasever/photon_snapshots_$releasever_$basearch/91/snapshot-91-Update$updatenumber.$basearch.list"
+
+- name: Refresh tdnf cache after snapshot URL update
+  ansible.builtin.command: tdnf clean all && tdnf makecache
+  changed_when: false
+
+- name: Remove packages deprecated and disabled in latest photon snapshot
+  ansible.builtin.command: tdnf remove -y "{{ item }}"
+  with_items: "{{ deprecated_packages_update }}"
+  changed_when: false
+  ignore_errors: true
+
+- name: Exclude packages from upgrade
+  ansible.builtin.lineinfile:
+    path: /etc/tdnf/tdnf.conf
+    regexp: ^excludepkgs=
+    line: excludepkgs=photon-repos
